@@ -1,7 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+      <TargetFramework>netstandard2.1</TargetFramework>
+
+      <LangVersion>preview</LangVersion>
+      <EnablePreviewFeatures>true</EnablePreviewFeatures>
+
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
