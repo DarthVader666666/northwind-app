@@ -77,7 +77,7 @@ namespace Northwind.Services.EntityFrameworkCore
             }
 
             static IEnumerable<Category> GenerateCategoriesCore()
-            { 
+            {
                 return new Faker<Category>().
                     RuleFor(product => product.CategoryName, faker => faker.Commerce.Categories(1).First()).
                     RuleFor(product => product.Description, faker => faker.Commerce.ProductDescription()).

@@ -4,13 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
     public partial class Territory
     {
         public Territory()
         {
-            Employees = new HashSet<Employee>();
+            EmployeeTerritories = new HashSet<EmployeeTerritory>();
         }
 
         [Key]
@@ -23,12 +25,10 @@ namespace Northwind.Services.Entities
         [Column("RegionID")]
         public int RegionId { get; set; }
 
-        [ForeignKey("RegionId")]
+        [ForeignKey(nameof(RegionId))]
         [InverseProperty("Territories")]
         public virtual Region Region { get; set; }
-
-        [ForeignKey("TerritoryId")]
-        [InverseProperty("Territories")]
-        public virtual ICollection<Employee> Employees { get; set; }
+        [InverseProperty(nameof(EmployeeTerritory.Territory))]
+        public virtual ICollection<EmployeeTerritory> EmployeeTerritories { get; set; }
     }
 }

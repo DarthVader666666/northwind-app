@@ -4,9 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
-    [Keyless]
     public partial class CustomerAndSuppliersByCity
     {
         [StringLength(15)]
@@ -18,7 +19,6 @@ namespace Northwind.Services.Entities
         public string ContactName { get; set; }
         [Required]
         [StringLength(9)]
-        //[Unicode(false)]
         public string Relationship { get; set; }
     }
 }

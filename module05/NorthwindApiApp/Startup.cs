@@ -83,7 +83,7 @@ namespace NorthwindApiApp
 
                         services.AddScoped<IEmployeeManagementService, EmployeeManagementService>(
                             serviceProvider => new EmployeeManagementService(serviceProvider.GetService<NorthwindContext>()));
-                    };break;
+                    }; break;
             }
 
             services.AddControllers();

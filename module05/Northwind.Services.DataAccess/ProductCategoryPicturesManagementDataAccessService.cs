@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Northwind.DataAccess;
+﻿using Northwind.DataAccess;
 using Northwind.DataAccess.Products;
 
 namespace Northwind.Services.DataAccess
@@ -34,17 +31,24 @@ namespace Northwind.Services.DataAccess
                 var category = this.categoryService.FindProductCategory(categoryId);
                 var bytes = category.Picture;
 
-                if (bytes is null || bytes.Length == 0)
+                byte[] header = new byte[78];
+
+                Array.Copy(bytes, header, header.Length);
+
+                if (bytes == null || bytes.Length == 0)
                 {
                     return (false, null);
                 }
 
-                if (BitConverter.ToString(bytes[..78]) == OleHeader)
+                if (BitConverter.ToString(header) == OleHeader)
                 {
-                    bytes = bytes[78..];
+                    var newBytes = new byte[bytes.Length - header.Length];
+                    Array.Copy(bytes, 78, newBytes, 0, newBytes.Length);
+
+                    return (true, newBytes);
                 }
 
-                return (bytes is not null, bytes);
+                return (true, bytes);
             });
         }
 

@@ -49,7 +49,7 @@ namespace Northwind.Services.EntityFrameworkCore
 
         public IAsyncEnumerable<Category> LookupCategoriesByNameAsync(ICollection<string> names)
         {
-            var categories =  this.context.Categories.Where(c => names.Any(n => n == c.CategoryName));
+            var categories = this.context.Categories.Where(c => names.Any(n => n == c.CategoryName));
 
             if (!categories.Any())
             {
@@ -78,7 +78,7 @@ namespace Northwind.Services.EntityFrameworkCore
             {
                 return false;
             }
-            
+
             this.context.Entry(productCategory).State = EntityState.Modified;
             await this.context.SaveChangesAsync();
 

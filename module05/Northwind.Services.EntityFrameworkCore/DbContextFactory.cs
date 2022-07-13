@@ -14,19 +14,19 @@ namespace Northwind.Services.EntityFrameworkCore
 
             switch (args[0].ToUpper())
             {
-                case "IN_MEMORY":
-                    {
-                        builder.UseInMemoryDatabase("Northwind");
-                    }; break;
+                //case "IN_MEMORY":
+                //    {
+                //        object value = builder.UseInMemoryDatabase().ToString("Northwind");
+                //    }; break;
                 case "SQL":
                     {
                         if (args.Length == 2)
                         {
                             builder.UseSqlServer(args[1]);
-                        }                        
+                        }
                     }; break;
 
-                    default: throw new ArgumentException();
+                default: throw new ArgumentException();
             }
 
             return new NorthwindContext(builder.Options);

@@ -4,13 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
     [Table("Order Details")]
-    [Index("OrderId", Name = "OrderID")]
-    [Index("OrderId", Name = "OrdersOrder_Details")]
-    [Index("ProductId", Name = "ProductID")]
-    [Index("ProductId", Name = "ProductsOrder_Details")]
     public partial class OrderDetail
     {
         [Key]
@@ -24,10 +22,10 @@ namespace Northwind.Services.Entities
         public short Quantity { get; set; }
         public float Discount { get; set; }
 
-        [ForeignKey("OrderId")]
+        [ForeignKey(nameof(OrderId))]
         [InverseProperty("OrderDetails")]
         public virtual Order Order { get; set; }
-        [ForeignKey("ProductId")]
+        [ForeignKey(nameof(ProductId))]
         [InverseProperty("OrderDetails")]
         public virtual Product Product { get; set; }
     }

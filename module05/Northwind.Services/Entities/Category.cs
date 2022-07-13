@@ -4,9 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
-    [Index("CategoryName", Name = "CategoryName")]
     public partial class Category
     {
         public Category()
@@ -25,7 +26,7 @@ namespace Northwind.Services.Entities
         [Column(TypeName = "image")]
         public byte[] Picture { get; set; }
 
-        [InverseProperty("Category")]
+        [InverseProperty(nameof(Product.Category))]
         public virtual ICollection<Product> Products { get; set; }
     }
 }

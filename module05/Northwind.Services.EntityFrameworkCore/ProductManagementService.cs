@@ -15,7 +15,7 @@ namespace Northwind.Services.EntityFrameworkCore
         private readonly NorthwindContext context;
 
         public ProductManagementService(NorthwindContext context)
-        { 
+        {
             this.context = context;
         }
 
@@ -39,12 +39,12 @@ namespace Northwind.Services.EntityFrameworkCore
         public async Task<bool> DestroyProductAsync(int productId)
         {
             var product = this.context.Products.FindAsync(productId).Result;
-            
+
             if (product is null)
             {
                 return false;
             }
-            
+
             this.context.Products.Remove(product);
             await this.context.SaveChangesAsync();
             return true;

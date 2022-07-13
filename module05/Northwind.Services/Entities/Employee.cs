@@ -4,17 +4,17 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
-    [Index("LastName", Name = "LastName")]
-    [Index("PostalCode", Name = "PostalCode")]
     public partial class Employee
     {
         public Employee()
         {
+            EmployeeTerritories = new HashSet<EmployeeTerritory>();
             InverseReportsToNavigation = new HashSet<Employee>();
             Orders = new HashSet<Order>();
-            Territories = new HashSet<Territory>();
         }
 
         [Key]
@@ -56,16 +56,14 @@ namespace Northwind.Services.Entities
         [StringLength(255)]
         public string PhotoPath { get; set; }
 
-        [ForeignKey("ReportsTo")]
-        [InverseProperty("InverseReportsToNavigation")]
+        [ForeignKey(nameof(ReportsTo))]
+        [InverseProperty(nameof(Employee.InverseReportsToNavigation))]
         public virtual Employee ReportsToNavigation { get; set; }
-        [InverseProperty("ReportsToNavigation")]
+        [InverseProperty(nameof(EmployeeTerritory.Employee))]
+        public virtual ICollection<EmployeeTerritory> EmployeeTerritories { get; set; }
+        [InverseProperty(nameof(Employee.ReportsToNavigation))]
         public virtual ICollection<Employee> InverseReportsToNavigation { get; set; }
-        [InverseProperty("Employee")]
+        [InverseProperty(nameof(Order.Employee))]
         public virtual ICollection<Order> Orders { get; set; }
-
-        [ForeignKey("EmployeeId")]
-        [InverseProperty("Employees")]
-        public virtual ICollection<Territory> Territories { get; set; }
     }
 }

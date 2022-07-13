@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
     [Table("Region")]
@@ -21,7 +23,7 @@ namespace Northwind.Services.Entities
         [StringLength(50)]
         public string RegionDescription { get; set; }
 
-        [InverseProperty("Region")]
+        [InverseProperty(nameof(Territory.Region))]
         public virtual ICollection<Territory> Territories { get; set; }
     }
 }

@@ -4,13 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
-    [Index("CategoryId", Name = "CategoriesProducts")]
-    [Index("CategoryId", Name = "CategoryID")]
-    [Index("ProductName", Name = "ProductName")]
-    [Index("SupplierId", Name = "SupplierID")]
-    [Index("SupplierId", Name = "SuppliersProducts")]
     public partial class Product
     {
         public Product()
@@ -37,13 +34,13 @@ namespace Northwind.Services.Entities
         public short? ReorderLevel { get; set; }
         public bool Discontinued { get; set; }
 
-        [ForeignKey("CategoryId")]
+        [ForeignKey(nameof(CategoryId))]
         [InverseProperty("Products")]
         public virtual Category Category { get; set; }
-        [ForeignKey("SupplierId")]
+        [ForeignKey(nameof(SupplierId))]
         [InverseProperty("Products")]
         public virtual Supplier Supplier { get; set; }
-        [InverseProperty("Product")]
+        [InverseProperty(nameof(OrderDetail.Product))]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

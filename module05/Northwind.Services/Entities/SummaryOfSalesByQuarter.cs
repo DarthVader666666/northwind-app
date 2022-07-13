@@ -4,9 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
-    [Keyless]
     public partial class SummaryOfSalesByQuarter
     {
         [Column(TypeName = "datetime")]

@@ -4,13 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
     public partial class CustomerDemographic
     {
         public CustomerDemographic()
         {
-            Customers = new HashSet<Customer>();
+            CustomerCustomerDemos = new HashSet<CustomerCustomerDemo>();
         }
 
         [Key]
@@ -20,8 +22,7 @@ namespace Northwind.Services.Entities
         [Column(TypeName = "ntext")]
         public string CustomerDesc { get; set; }
 
-        [ForeignKey("CustomerTypeId")]
-        [InverseProperty("CustomerTypes")]
-        public virtual ICollection<Customer> Customers { get; set; }
+        [InverseProperty(nameof(CustomerCustomerDemo.CustomerType))]
+        public virtual ICollection<CustomerCustomerDemo> CustomerCustomerDemos { get; set; }
     }
 }

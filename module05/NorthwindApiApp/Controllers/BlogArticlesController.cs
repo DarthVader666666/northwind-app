@@ -120,7 +120,7 @@ namespace NorthwindApiApp.Controllers
 
         [HttpPost("{articleId:int}/products/{productId:int}")]
         public async Task<IActionResult> PostBlogArticleProduct(int articleId, int productId)
-        { 
+        {
             var id = await this.blogService.CreateBlogArticleProductAsync(articleId, productId);
 
             if (id == -1)
@@ -161,7 +161,7 @@ namespace NorthwindApiApp.Controllers
 
         [HttpGet("{articleId:int}/comments")]
         public async Task<ActionResult<IAsyncEnumerable<BlogComment>>> ReadBlogCommentsByArticleId(int articleId)
-        { 
+        {
             var comments = this.blogService.ReadAllComments(articleId);
 
             if (!await comments.AnyAsync() || comments == null)

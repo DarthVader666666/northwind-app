@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
-    [Index("CompanyName", Name = "CompanyName")]
-    [Index("PostalCode", Name = "PostalCode")]
     public partial class Supplier
     {
         public Supplier()
@@ -42,7 +42,7 @@ namespace Northwind.Services.Entities
         [Column(TypeName = "ntext")]
         public string HomePage { get; set; }
 
-        [InverseProperty("Supplier")]
+        [InverseProperty(nameof(Product.Supplier))]
         public virtual ICollection<Product> Products { get; set; }
     }
 }

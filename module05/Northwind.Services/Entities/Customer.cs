@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+
+
+#nullable disable
 
 namespace Northwind.Services.Entities
 {
-    [Index("City", Name = "City")]
-    [Index("CompanyName", Name = "CompanyName")]
-    [Index("PostalCode", Name = "PostalCode")]
-    [Index("Region", Name = "Region")]
     public partial class Customer
     {
         public Customer()
         {
+            CustomerCustomerDemos = new HashSet<CustomerCustomerDemo>();
             Orders = new HashSet<Order>();
-            CustomerTypes = new HashSet<CustomerDemographic>();
         }
 
         [Key]
@@ -44,11 +43,9 @@ namespace Northwind.Services.Entities
         [StringLength(24)]
         public string Fax { get; set; }
 
-        [InverseProperty("Customer")]
+        [InverseProperty(nameof(CustomerCustomerDemo.Customer))]
+        public virtual ICollection<CustomerCustomerDemo> CustomerCustomerDemos { get; set; }
+        [InverseProperty(nameof(Order.Customer))]
         public virtual ICollection<Order> Orders { get; set; }
-
-        [ForeignKey("CustomerId")]
-        [InverseProperty("Customers")]
-        public virtual ICollection<CustomerDemographic> CustomerTypes { get; set; }
     }
 }

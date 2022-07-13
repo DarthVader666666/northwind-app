@@ -4,16 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
+
 namespace Northwind.Services.Entities
 {
-    [Index("CustomerId", Name = "CustomerID")]
-    [Index("CustomerId", Name = "CustomersOrders")]
-    [Index("EmployeeId", Name = "EmployeeID")]
-    [Index("EmployeeId", Name = "EmployeesOrders")]
-    [Index("OrderDate", Name = "OrderDate")]
-    [Index("ShipPostalCode", Name = "ShipPostalCode")]
-    [Index("ShippedDate", Name = "ShippedDate")]
-    [Index("ShipVia", Name = "ShippersOrders")]
     public partial class Order
     {
         public Order()
@@ -51,16 +45,16 @@ namespace Northwind.Services.Entities
         [StringLength(15)]
         public string ShipCountry { get; set; }
 
-        [ForeignKey("CustomerId")]
+        [ForeignKey(nameof(CustomerId))]
         [InverseProperty("Orders")]
         public virtual Customer Customer { get; set; }
-        [ForeignKey("EmployeeId")]
+        [ForeignKey(nameof(EmployeeId))]
         [InverseProperty("Orders")]
         public virtual Employee Employee { get; set; }
-        [ForeignKey("ShipVia")]
-        [InverseProperty("Orders")]
+        [ForeignKey(nameof(ShipVia))]
+        [InverseProperty(nameof(Shipper.Orders))]
         public virtual Shipper ShipViaNavigation { get; set; }
-        [InverseProperty("Order")]
+        [InverseProperty(nameof(OrderDetail.Order))]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

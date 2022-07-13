@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+
+#nullable disable
 
 namespace Northwind.Services.Entities
 {
-    [Keyless]
     public partial class AlphabeticalListOfProduct
     {
         [Column("ProductID")]

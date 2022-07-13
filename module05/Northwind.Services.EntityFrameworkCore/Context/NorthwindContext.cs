@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 using Northwind.Services.Entities;
+
+#nullable disable
 
 namespace Northwind.Services.EntityFrameworkCore.Context
 {
@@ -23,8 +22,10 @@ namespace Northwind.Services.EntityFrameworkCore.Context
         public virtual DbSet<CurrentProductList> CurrentProductLists { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; }
+        public virtual DbSet<CustomerCustomerDemo> CustomerCustomerDemos { get; set; }
         public virtual DbSet<CustomerDemographic> CustomerDemographics { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<EmployeeTerritory> EmployeeTerritories { get; set; }
         public virtual DbSet<Invoice> Invoices { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
@@ -47,11 +48,17 @@ namespace Northwind.Services.EntityFrameworkCore.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var d = optionsBuilder.Options;
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("data source=(localdb)\\MSSQLLocalDB;Integrated Security=True;Database=Northwind;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
             modelBuilder.Entity<AlphabeticalListOfProduct>(entity =>
             {
                 entity.ToView("Alphabetical list of products");
@@ -71,29 +78,36 @@ namespace Northwind.Services.EntityFrameworkCore.Context
 
             modelBuilder.Entity<Customer>(entity =>
             {
-                entity.Property(e => e.CustomerId).IsFixedLength();
-
-                entity.HasMany(d => d.CustomerTypes)
-                    .WithMany(p => p.Customers)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "CustomerCustomerDemo",
-                        l => l.HasOne<CustomerDemographic>().WithMany().HasForeignKey("CustomerTypeId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CustomerCustomerDemo"),
-                        r => r.HasOne<Customer>().WithMany().HasForeignKey("CustomerId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CustomerCustomerDemo_Customers"),
-                        j =>
-                        {
-                            j.HasKey("CustomerId", "CustomerTypeId").IsClustered(false);
-
-                            j.ToTable("CustomerCustomerDemo");
-
-                            j.IndexerProperty<string>("CustomerId").HasMaxLength(5).HasColumnName("CustomerID").IsFixedLength();
-
-                            j.IndexerProperty<string>("CustomerTypeId").HasMaxLength(10).HasColumnName("CustomerTypeID").IsFixedLength();
-                        });
+                entity.Property(e => e.CustomerId).IsFixedLength(true);
             });
 
             modelBuilder.Entity<CustomerAndSuppliersByCity>(entity =>
             {
                 entity.ToView("Customer and Suppliers by City");
+
+                entity.Property(e => e.Relationship).IsUnicode(false);
+            });
+
+            modelBuilder.Entity<CustomerCustomerDemo>(entity =>
+            {
+                entity.HasKey(e => new { e.CustomerId, e.CustomerTypeId })
+                    .IsClustered(false);
+
+                entity.Property(e => e.CustomerId).IsFixedLength(true);
+
+                entity.Property(e => e.CustomerTypeId).IsFixedLength(true);
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.CustomerCustomerDemos)
+                    .HasForeignKey(d => d.CustomerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CustomerCustomerDemo_Customers");
+
+                entity.HasOne(d => d.CustomerType)
+                    .WithMany(p => p.CustomerCustomerDemos)
+                    .HasForeignKey(d => d.CustomerTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CustomerCustomerDemo");
             });
 
             modelBuilder.Entity<CustomerDemographic>(entity =>
@@ -101,7 +115,7 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                 entity.HasKey(e => e.CustomerTypeId)
                     .IsClustered(false);
 
-                entity.Property(e => e.CustomerTypeId).IsFixedLength();
+                entity.Property(e => e.CustomerTypeId).IsFixedLength(true);
             });
 
             modelBuilder.Entity<Employee>(entity =>
@@ -110,35 +124,36 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                     .WithMany(p => p.InverseReportsToNavigation)
                     .HasForeignKey(d => d.ReportsTo)
                     .HasConstraintName("FK_Employees_Employees");
+            });
 
-                entity.HasMany(d => d.Territories)
-                    .WithMany(p => p.Employees)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "EmployeeTerritory",
-                        l => l.HasOne<Territory>().WithMany().HasForeignKey("TerritoryId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EmployeeTerritories_Territories"),
-                        r => r.HasOne<Employee>().WithMany().HasForeignKey("EmployeeId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EmployeeTerritories_Employees"),
-                        j =>
-                        {
-                            j.HasKey("EmployeeId", "TerritoryId").IsClustered(false);
+            modelBuilder.Entity<EmployeeTerritory>(entity =>
+            {
+                entity.HasKey(e => new { e.EmployeeId, e.TerritoryId })
+                    .IsClustered(false);
 
-                            j.ToTable("EmployeeTerritories");
+                entity.HasOne(d => d.Employee)
+                    .WithMany(p => p.EmployeeTerritories)
+                    .HasForeignKey(d => d.EmployeeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EmployeeTerritories_Employees");
 
-                            j.IndexerProperty<int>("EmployeeId").HasColumnName("EmployeeID");
-
-                            j.IndexerProperty<string>("TerritoryId").HasMaxLength(20).HasColumnName("TerritoryID");
-                        });
+                entity.HasOne(d => d.Territory)
+                    .WithMany(p => p.EmployeeTerritories)
+                    .HasForeignKey(d => d.TerritoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EmployeeTerritories_Territories");
             });
 
             modelBuilder.Entity<Invoice>(entity =>
             {
                 entity.ToView("Invoices");
 
-                entity.Property(e => e.CustomerId).IsFixedLength();
+                entity.Property(e => e.CustomerId).IsFixedLength(true);
             });
 
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.Property(e => e.CustomerId).IsFixedLength();
+                entity.Property(e => e.CustomerId).IsFixedLength(true);
 
                 entity.Property(e => e.Freight).HasDefaultValueSql("((0))");
 
@@ -192,7 +207,7 @@ namespace Northwind.Services.EntityFrameworkCore.Context
             {
                 entity.ToView("Orders Qry");
 
-                entity.Property(e => e.CustomerId).IsFixedLength();
+                entity.Property(e => e.CustomerId).IsFixedLength(true);
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -235,7 +250,7 @@ namespace Northwind.Services.EntityFrameworkCore.Context
             {
                 entity.ToView("Quarterly Orders");
 
-                entity.Property(e => e.CustomerId).IsFixedLength();
+                entity.Property(e => e.CustomerId).IsFixedLength(true);
             });
 
             modelBuilder.Entity<Region>(entity =>
@@ -245,7 +260,7 @@ namespace Northwind.Services.EntityFrameworkCore.Context
 
                 entity.Property(e => e.RegionId).ValueGeneratedNever();
 
-                entity.Property(e => e.RegionDescription).IsFixedLength();
+                entity.Property(e => e.RegionDescription).IsFixedLength(true);
             });
 
             modelBuilder.Entity<SalesByCategory>(entity =>
@@ -273,7 +288,7 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                 entity.HasKey(e => e.TerritoryId)
                     .IsClustered(false);
 
-                entity.Property(e => e.TerritoryDescription).IsFixedLength();
+                entity.Property(e => e.TerritoryDescription).IsFixedLength(true);
 
                 entity.HasOne(d => d.Region)
                     .WithMany(p => p.Territories)
@@ -281,8 +296,6 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Territories_Region");
             });
-
-            modelBuilder.Seed();
 
             OnModelCreatingPartial(modelBuilder);
         }
