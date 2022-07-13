@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Northwind.Services.EntityFrameworkCore.Blogging": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "SQLCONNSTR_NORTHWIND_BLOGGING": "data source=(localdb)\\\\MSSQLLocalDB; Integrated Security=True; Initial Catalog=NorthwindBlogging;"
+      }
+    }
+  }
+}
