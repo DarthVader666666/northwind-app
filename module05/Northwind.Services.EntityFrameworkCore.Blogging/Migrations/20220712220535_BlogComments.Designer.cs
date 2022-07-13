@@ -20,9 +20,9 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.6")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1, 1);
 
             modelBuilder.Entity("Northwind.Services.Blogging.BlogArticle", b =>
                 {
@@ -31,7 +31,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                         .HasColumnType("int")
                         .HasColumnName("article_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ArticleId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ArticleId"), 1, 1);
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int")
@@ -42,12 +42,12 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                         .HasColumnName("publish_date");
 
                     b.Property<string>("Text")
-                        .HasMaxLength(255)
+                        //.HasMaxength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("text");
 
                     b.Property<string>("Title")
-                        .HasMaxLength(40)
+                        //.HasMaxength(40)
                         .HasColumnType("nvarchar(40)")
                         .HasColumnName("title");
 
@@ -63,7 +63,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                         .HasColumnType("int")
                         .HasColumnName("article_product_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ArticleProductId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ArticleProductId"), 1, 1);
 
                     b.Property<int>("ArticleId")
                         .HasColumnType("int")
@@ -85,14 +85,14 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                         .HasColumnType("int")
                         .HasColumnName("blog_comment_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BlogCommentId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BlogCommentId"), 1, 1);
 
                     b.Property<int>("ArticleId")
                         .HasColumnType("int")
                         .HasColumnName("article_id");
 
                     b.Property<string>("Comment")
-                        .HasMaxLength(255)
+                        //.HasMaxength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("comment");
 

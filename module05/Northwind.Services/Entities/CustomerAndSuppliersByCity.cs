@@ -18,7 +18,7 @@ namespace Northwind.Services.Entities
         public string ContactName { get; set; }
         [Required]
         [StringLength(9)]
-        [Unicode(false)]
+        //[Unicode(false)]
         public string Relationship { get; set; }
     }
 }

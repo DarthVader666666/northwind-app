@@ -156,7 +156,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
 
         public IAsyncEnumerable<BlogComment> ReadAllComments(int blogArticleId)
         {
-            return this.context.BlogComments.Where(x => x.ArticleId == blogArticleId).ToAsyncEnumerable();
+            return this.context.BlogComments.ToAsyncEnumerable().Where(x => x.ArticleId == blogArticleId);
         }
 
         public async Task<bool> UpdateCommentAsync(int blogArticleId, int customerId, string text)

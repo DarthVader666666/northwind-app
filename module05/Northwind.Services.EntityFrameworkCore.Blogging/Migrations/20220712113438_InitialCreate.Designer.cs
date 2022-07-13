@@ -22,7 +22,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                 .HasAnnotation("ProductVersion", "6.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1, 1);
 
             modelBuilder.Entity("Northwind.Services.Blogging.BlogArticle", b =>
                 {
@@ -31,7 +31,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                         .HasColumnType("int")
                         .HasColumnName("article_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ArticleId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ArticleId"), 1, 1);
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int")
