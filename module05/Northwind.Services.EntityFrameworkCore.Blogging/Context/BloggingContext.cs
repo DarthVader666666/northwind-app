@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Northwind.Services.Blogging;
 
-namespace Northwind.Services.EntityFrameworkCore.Blogging
+namespace Northwind.Services.EntityFrameworkCore.Blogging.Context
 {
     public class BloggingContext : DbContext
     {
@@ -18,5 +18,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
         public virtual DbSet<BlogArticle> BlogArticles { get; set; }
 
         public virtual DbSet<BlogArticleProduct> BlogArticleProducts { get; set; }
+
+        public virtual DbSet<BlogComment> BlogComments { get; set; }
     }
 }

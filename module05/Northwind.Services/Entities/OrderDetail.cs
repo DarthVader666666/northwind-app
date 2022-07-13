@@ -16,7 +16,7 @@ namespace Northwind.Services.Entities
         [Key]
         [Column("OrderID")]
         public int OrderId { get; set; }
-        //[Key]
+        [Key]
         [Column("ProductID")]
         public int ProductId { get; set; }
         [Column(TypeName = "money")]

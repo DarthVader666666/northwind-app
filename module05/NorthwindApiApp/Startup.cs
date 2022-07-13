@@ -34,7 +34,7 @@ namespace NorthwindApiApp
             {
                 case "SQL":
                     {
-                        services.AddScoped((service) =>
+                        services.AddScoped<SqlConnection>((service) =>
                         {
                             var sqlConnection =
                             new SqlConnection(this.Configuration["ConnectionString"]);
@@ -44,7 +44,7 @@ namespace NorthwindApiApp
 
                         services.AddScoped<NorthwindDataAccessFactory, SqlServerDataAccessFactory>(
                             serviceProvider => new SqlServerDataAccessFactory(
-                                new SqlConnection(this.Configuration["ConnectionString"])));
+                                serviceProvider.GetService<SqlConnection>()));
 
                         services.AddScoped<IProductManagementService, ProductManagementDataAccessService>(
                             serviceProvider => new ProductManagementDataAccessService(serviceProvider.GetService<NorthwindDataAccessFactory>()));
@@ -58,8 +58,12 @@ namespace NorthwindApiApp
                         services.AddScoped<IEmployeeManagementService, EmployeeManagementDataAccessService>(
                             serviceProvider => new EmployeeManagementDataAccessService(serviceProvider.GetService<NorthwindDataAccessFactory>()));
 
-                        services.AddScoped<IBloggingService, BloggingService>(
-                            serviceProvider => new BloggingService(new DesignTimeBloggingContextFactory()));
+
+                        services.AddScoped<IBloggingService, BloggingService>(serviceProvider =>
+                        new BloggingService(new DesignTimeBloggingContextFactory(),
+                        serviceProvider.GetService<IEmployeeManagementService>(),
+                        serviceProvider.GetService<IProductManagementService>()));
+
 
                         services.AddScoped<NorthwindDataAccessFactory, SqlServerDataAccessFactory>();
                     }; break;
@@ -68,16 +72,16 @@ namespace NorthwindApiApp
                     {
                         services.AddDbContext<NorthwindContext>(opt => opt.UseInMemoryDatabase("Northwind"));
 
-                        services.AddTransient<IProductManagementService, ProductManagementService>(
+                        services.AddScoped<IProductManagementService, ProductManagementService>(
                             serviceProvider => new ProductManagementService(serviceProvider.GetService<NorthwindContext>()));
 
-                        services.AddTransient<IProductCategoriesManagementService, ProductCategoriesManagementService>(
+                        services.AddScoped<IProductCategoriesManagementService, ProductCategoriesManagementService>(
                             serviceProvider => new ProductCategoriesManagementService(serviceProvider.GetService<NorthwindContext>()));
 
-                        services.AddTransient<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementService>(
+                        services.AddScoped<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementService>(
                             serviceProvider => new ProductCategoryPicturesManagementService(serviceProvider.GetService<NorthwindContext>()));
 
-                        services.AddTransient<IEmployeeManagementService, EmployeeManagementService>(
+                        services.AddScoped<IEmployeeManagementService, EmployeeManagementService>(
                             serviceProvider => new EmployeeManagementService(serviceProvider.GetService<NorthwindContext>()));
                     };break;
             }

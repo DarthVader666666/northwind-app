@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Northwind.Services.Entities;
 
 namespace Northwind.Services.Blogging
 {
@@ -12,14 +13,14 @@ namespace Northwind.Services.Blogging
         /// Shows a list of blogArticles using specified offset and limit for pagination.
         /// </summary>
         /// <returns>A <see cref="IAsyncEnumerable{T}"/> of <see cref="BlogArticle"/>.</returns>
-        IAsyncEnumerable<BlogArticle> GetBlogArticlesAsync();
+        IAsyncEnumerable<(BlogArticle blog, Employee employee)> GetBlogArticlesAsync();
 
         /// <summary>
         /// Try to show a blogArticle with specified identifier.
         /// </summary>
         /// <param name="blogArticleId">A blogArticle identifier.</param>
         /// <returns>Returns true if a blogArticle is returned; otherwise false.</returns>
-        Task<(bool result, BlogArticle blogArticle)> TryGetBlogArticleAsync(int blogArticleId);
+        Task<(bool result, (BlogArticle blog, Employee employee))> TryGetBlogArticleAsync(int blogArticleId);
 
         /// <summary>
         /// Creates a new blogArticle.
@@ -51,11 +52,56 @@ namespace Northwind.Services.Blogging
         Task<bool> UpdateBlogArticleAsync(int blogArticleId, BlogArticle blogArticle);
 
         /// <summary>
-        /// Try to show a blogArticleProduct with specified identifier.
+        /// GetProductsForBlogArticleAsync.
         /// </summary>
-        /// <param name="blogArticleId">A blogArticle identifier.</param>
-        /// <returns>Returns true if a blogArticle is returned; otherwise false.</returns>
-        Task<(bool result, BlogArticleProduct blogArticle)> TryGetBlogArticleProductAsync(int blogArticleId);
+        /// <param name="blogArticleId"></param>
+        /// <returns></returns>
+        IAsyncEnumerable<Product> GetProductsForBlogArticleAsync(int blogArticleId);
 
+        /// <summary>
+        /// CreateBlogArticleProduct.
+        /// </summary>
+        /// <param name="blogArticle"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        Task<int> CreateBlogArticleProductAsync(int blogArticleId, int productId);
+
+        /// <summary>
+        /// DestroyBlogArticleProductAsync.
+        /// </summary>
+        /// <param name="blogArticle"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        Task<bool> DestroyBlogArticleProductAsync(int blogArticle, int productId);
+
+        /// <summary>
+        /// CreateCommentAsync.
+        /// </summary>
+        /// <param name="blogArticle"></param>
+        /// <returns></returns>
+        Task<int> CreateCommentAsync(int blogArticle, int customerId, string text);
+
+        /// <summary>
+        /// ReadAllComments.
+        /// </summary>
+        /// <param name="blogArticleId"></param>
+        /// <returns></returns>
+        IAsyncEnumerable<BlogComment> ReadAllComments(int blogArticleId);
+
+        /// <summary>
+        /// UpdateCommentAsync.
+        /// </summary>
+        /// <param name="blogArticleId"></param>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        Task<bool> UpdateCommentAsync(int blogArticleId, int customerId, string text);
+
+        /// <summary>
+        /// DestroyCommentAsync.
+        /// </summary>
+        /// <param name="blogArticleId"></param>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        Task<bool> DestroyCommentAsync(int blogArticleId, int customerId);
     }
 }

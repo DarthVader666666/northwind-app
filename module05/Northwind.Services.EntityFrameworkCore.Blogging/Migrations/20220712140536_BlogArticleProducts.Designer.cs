@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Northwind.Services.EntityFrameworkCore.Blogging.Context;
 
@@ -11,9 +12,10 @@ using Northwind.Services.EntityFrameworkCore.Blogging.Context;
 namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20220712140536_BlogArticleProducts")]
+    partial class BlogArticleProducts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,33 +76,6 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                     b.HasKey("ArticleProductId");
 
                     b.ToTable("BlogArticleProducts");
-                });
-
-            modelBuilder.Entity("Northwind.Services.Blogging.BlogComment", b =>
-                {
-                    b.Property<int>("BlogCommentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("blog_comment_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BlogCommentId"), 1L, 1);
-
-                    b.Property<int>("ArticleId")
-                        .HasColumnType("int")
-                        .HasColumnName("article_id");
-
-                    b.Property<string>("Comment")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("comment");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int")
-                        .HasColumnName("customer_id");
-
-                    b.HasKey("BlogCommentId");
-
-                    b.ToTable("BlogComments");
                 });
 #pragma warning restore 612, 618
         }

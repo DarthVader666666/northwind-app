@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Northwind.Services.EntityFrameworkCore.Blogging;
+using Northwind.Services.EntityFrameworkCore.Blogging.Context;
 
 #nullable disable
 
 namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    [Migration("20220710170459_InitialCreate")]
+    [Migration("20220712113438_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
