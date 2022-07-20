@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Northwind.DataAccess;
 using Northwind.DataAccess.Employees;
 using Northwind.Services.Employees;

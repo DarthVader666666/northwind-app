@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
-
 namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
 {
-    public partial class BlogComments : Migration
+    public partial class AddBlogComment : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,15 +10,19 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                 name: "BlogComments",
                 columns: table => new
                 {
-                    blog_comment_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     article_id = table.Column<int>(type: "int", nullable: false),
                     customer_id = table.Column<int>(type: "int", nullable: false),
-                    comment = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    comment = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BlogComments", x => x.blog_comment_id);
+                    table.PrimaryKey("PK_BlogComments", x => new { x.article_id, x.customer_id });
+                    table.ForeignKey(
+                        name: "FK_BlogComments_BlogArticles_article_id",
+                        column: x => x.article_id,
+                        principalTable: "BlogArticles",
+                        principalColumn: "article_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
         }
 

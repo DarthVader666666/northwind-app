@@ -12,8 +12,9 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Context
             const string connectionStringName = "NORTHWIND_BLOGGING";
             const string connectioStringPrefix = "SQLCONNSTR_";
 
-            //var configuration = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-            var connectionString = Environment.GetEnvironmentVariable(connectioStringPrefix + connectionStringName); //configuration.GetConnectionString(connectioStringPrefix + connectionStringName);
+            var configuration = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            var connectionString = configuration.GetConnectionString(connectionStringName);
+            //Environment.GetEnvironmentVariable(connectioStringPrefix + connectionStringName); //configuration.GetConnectionString(connectioStringPrefix + connectionStringName);
 
             if (string.IsNullOrEmpty(connectionString))
             {

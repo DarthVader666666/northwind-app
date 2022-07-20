@@ -30,6 +30,11 @@ namespace NorthwindApiApp.Controllers
 
             var id = await this.blogService.CreateBlogArticleAsync(blogArticle);
 
+            if (id == -1)
+            {
+                return this.NotFound("No such employee.");
+            }
+
             return blogArticle is not null ? this.Ok($"New blog article created Id = {id}") : this.BadRequest();
         }
 

@@ -20,5 +20,18 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Context
         public virtual DbSet<BlogArticleProduct> BlogArticleProducts { get; set; }
 
         public virtual DbSet<BlogComment> BlogComments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<BlogArticleProduct>(entity =>
+            {
+                entity.HasKey(e => new { e.BlogArticleId, e.ProductId });
+            });
+
+            modelBuilder.Entity<BlogComment>(entity =>
+            {
+                entity.HasKey(e => new { e.BlogArticleId, e.CustomerId });
+            });
+        }
     }
 }

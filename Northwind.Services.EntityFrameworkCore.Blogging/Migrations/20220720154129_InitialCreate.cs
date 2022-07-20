@@ -1,8 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
-
 namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
 {
     public partial class InitialCreate : Migration
@@ -15,8 +13,8 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                 {
                     article_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    title = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
-                    text = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    title = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    text = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     publish_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     employee_id = table.Column<int>(type: "int", nullable: false)
                 },

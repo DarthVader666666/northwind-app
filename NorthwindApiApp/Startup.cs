@@ -47,23 +47,25 @@ namespace NorthwindApiApp
                                 serviceProvider.GetService<SqlConnection>()));
 
                         services.AddScoped<IProductManagementService, ProductManagementDataAccessService>(
-                            serviceProvider => new ProductManagementDataAccessService(serviceProvider.GetService<NorthwindDataAccessFactory>()));
+                            serviceProvider => new ProductManagementDataAccessService(
+                                serviceProvider.GetService<NorthwindDataAccessFactory>()));
 
                         services.AddScoped<IProductCategoriesManagementService, ProductCategoriesManagementDataAccessService>(
-                            serviceProvider => new ProductCategoriesManagementDataAccessService(serviceProvider.GetService<NorthwindDataAccessFactory>()));
+                            serviceProvider => new ProductCategoriesManagementDataAccessService(
+                                serviceProvider.GetService<NorthwindDataAccessFactory>()));
 
                         services.AddScoped<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementDataAccessService>(
-                            serviceProvider => new ProductCategoryPicturesManagementDataAccessService(serviceProvider.GetService<NorthwindDataAccessFactory>()));
+                            serviceProvider => new ProductCategoryPicturesManagementDataAccessService(
+                                serviceProvider.GetService<NorthwindDataAccessFactory>()));
 
                         services.AddScoped<IEmployeeManagementService, EmployeeManagementDataAccessService>(
-                            serviceProvider => new EmployeeManagementDataAccessService(serviceProvider.GetService<NorthwindDataAccessFactory>()));
-
+                            serviceProvider => new EmployeeManagementDataAccessService(
+                                serviceProvider.GetService<NorthwindDataAccessFactory>()));
 
                         services.AddScoped<IBloggingService, BloggingService>(serviceProvider =>
                         new BloggingService(new DesignTimeBloggingContextFactory(),
                         serviceProvider.GetService<IEmployeeManagementService>(),
                         serviceProvider.GetService<IProductManagementService>()));
-
 
                         services.AddScoped<NorthwindDataAccessFactory, SqlServerDataAccessFactory>();
                     }; break;

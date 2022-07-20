@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Northwind.Services.EntityFrameworkCore.Blogging.Context;
 
 namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20220720173517_AddBlogArticleProduct")]
+    partial class AddBlogArticleProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,39 +69,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                     b.ToTable("BlogArticleProducts");
                 });
 
-            modelBuilder.Entity("Northwind.Services.Blogging.BlogComment", b =>
-                {
-                    b.Property<int>("BlogArticleId")
-                        .HasColumnType("int")
-                        .HasColumnName("article_id");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int")
-                        .HasColumnName("customer_id");
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("comment");
-
-                    b.HasKey("BlogArticleId", "CustomerId");
-
-                    b.ToTable("BlogComments");
-                });
-
             modelBuilder.Entity("Northwind.Services.Blogging.BlogArticleProduct", b =>
-                {
-                    b.HasOne("Northwind.Services.Blogging.BlogArticle", "Article")
-                        .WithMany()
-                        .HasForeignKey("BlogArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Article");
-                });
-
-            modelBuilder.Entity("Northwind.Services.Blogging.BlogComment", b =>
                 {
                     b.HasOne("Northwind.Services.Blogging.BlogArticle", "Article")
                         .WithMany()

@@ -1,7 +1,5 @@
 ﻿using Northwind.Services.EntityFrameworkCore.Context;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Northwind.Services.EntityFrameworkCore
 {
