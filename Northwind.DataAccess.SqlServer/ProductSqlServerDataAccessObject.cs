@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
-using System.Linq;
 using Northwind.DataAccess.Products;
 
 namespace Northwind.DataAccess.SqlServer
@@ -11,7 +8,7 @@ namespace Northwind.DataAccess.SqlServer
     /// <summary>
     /// Represents a SQL Server-tailored DAO for Northwind products.
     /// </summary>
-    public sealed class ProductSqlServerDataAccessObject : IProductDataAccessObject
+    public sealed class ProductSqlServerDataAccessObject : IProductDataAccessObject, IDisposable
     {
         private readonly SqlConnection connection;
 
@@ -22,6 +19,8 @@ namespace Northwind.DataAccess.SqlServer
         public ProductSqlServerDataAccessObject(SqlConnection connection)
         {
             this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            this.connection.Close();
+            this.connection.Open();
         }
 
         /// <inheritdoc/>
@@ -420,6 +419,11 @@ namespace Northwind.DataAccess.SqlServer
                     yield return CreateProduct(reader);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            this.connection.Close();
         }
     }
 }

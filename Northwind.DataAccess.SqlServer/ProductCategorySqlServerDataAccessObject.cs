@@ -10,7 +10,7 @@ namespace Northwind.DataAccess.SqlServer
     /// <summary>
     /// Represents a SQL Server-tailored DAO for Northwind product categories.
     /// </summary>
-    public sealed class ProductCategorySqlServerDataAccessObject : IProductCategoryDataAccessObject
+    public sealed class ProductCategorySqlServerDataAccessObject : IProductCategoryDataAccessObject, IDisposable
     {
         private readonly SqlConnection connection;
 
@@ -21,6 +21,8 @@ namespace Northwind.DataAccess.SqlServer
         public ProductCategorySqlServerDataAccessObject(SqlConnection connection)
         {
             this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            this.connection.Close();
+            this.connection.Open();
         }
 
         /// <inheritdoc/>
@@ -241,6 +243,11 @@ namespace Northwind.DataAccess.SqlServer
                     yield return CreateProductCategory(reader);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            this.connection.Close();
         }
     }
 }

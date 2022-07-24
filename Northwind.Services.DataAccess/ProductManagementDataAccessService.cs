@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+using Northwind.Services.Products;
 using Northwind.DataAccess;
 using Northwind.DataAccess.Products;
-using Northwind.Services.Entities;
 
 namespace Northwind.Services.DataAccess
 {

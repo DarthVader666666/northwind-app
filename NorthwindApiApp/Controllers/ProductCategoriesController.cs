@@ -4,7 +4,8 @@ using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using Northwind.Services;
-using Northwind.Services.Entities;
+using Northwind.Services.Products;
+using System;
 
 namespace NorthwindApiApp.Controllers
 {
@@ -12,6 +13,7 @@ namespace NorthwindApiApp.Controllers
     [ApiController]
     public class ProductCategoriesController : ControllerBase
     {
+        private const string OleHeader = "15-1C-2F-00-02-00-00-00-0D-00-0E-00-14-00-21-00-FF-FF-FF-FF-42-69-74-6D-61-70-20-49-6D-61-67-65-00-50-61-69-6E-74-2E-50-69-63-74-75-72-65-00-01-05-00-00-02-00-00-00-07-00-00-00-50-42-72-75-73-68-00-00-00-00-00-00-00-00-00-A0-29-00-00";
         private readonly IProductCategoriesManagementService categoryService;
         private readonly IProductCategoryPicturesManagementService pictureService;
 
@@ -23,7 +25,7 @@ namespace NorthwindApiApp.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Category>> ReadCategory(int id)
+        public async Task<ActionResult<ProductCategory>> ReadCategory(int id)
         {
             var task = await this.categoryService.TryGetCategoryAsync(id);
 
@@ -31,7 +33,7 @@ namespace NorthwindApiApp.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IAsyncEnumerable<Category>> ReadCategories(
+        public ActionResult<IAsyncEnumerable<ProductCategory>> ReadCategories(
             [FromQuery(Name = "offset")] int offset, [FromQuery(Name = "limit")] int limit)
         {
             var categories = this.categoryService.GetCategoriesAsync(offset, limit);
@@ -39,7 +41,7 @@ namespace NorthwindApiApp.Controllers
         }
 
         [HttpGet("by_name")]
-        public ActionResult<IAsyncEnumerable<Category>> ReadCategories(List<string> names)
+        public ActionResult<IAsyncEnumerable<ProductCategory>> ReadCategories(List<string> names)
         {
             if (names is null || !names.Any())
             {
@@ -61,19 +63,26 @@ namespace NorthwindApiApp.Controllers
         {
             var (result, bytes) = await this.pictureService.TryGetPictureAsync(categoryId);
 
-            if (result)
-            {
-                var memoryStream = new MemoryStream(bytes);
-                return this.Ok(memoryStream);
-            }
-            else
+            if (!result)
             {
                 return this.NotFound();
             }
+
+            byte[] header = new byte[78];
+            Array.Copy(bytes, header, header.Length);
+
+            if (BitConverter.ToString(header) == OleHeader)
+            {
+                var newBytes = new byte[bytes.Length - header.Length];
+                Array.Copy(bytes, 78, newBytes, 0, newBytes.Length);
+                bytes = newBytes;
+            }
+
+            return this.Ok(new MemoryStream(bytes));
         }
 
         [HttpPost]
-        public async Task<ActionResult<Category>> CreateCategory(Category category)
+        public async Task<ActionResult<ProductCategory>> CreateCategory(ProductCategory category)
         {
             if (category is null)
             {
@@ -85,7 +94,7 @@ namespace NorthwindApiApp.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateCategory(int id, Category category)
+        public async Task<IActionResult> UpdateCategory(int id, ProductCategory category)
         {
             var result = await this.categoryService.UpdateCategoriesAsync(id, category);
             return result ? this.NoContent() : this.NotFound($"Category with id = {id} not found.");

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using Northwind.DataAccess.Employees;
 using Northwind.DataAccess.Products;
 
@@ -16,9 +15,9 @@ namespace Northwind.DataAccess.SqlServer
         /// Initializes a new instance of the <see cref="SqlServerDataAccessFactory"/> class.
         /// </summary>
         /// <param name="sqlConnection">A database connection to SQL Server.</param>
-        public SqlServerDataAccessFactory(SqlConnection sqlConnection)
+        public SqlServerDataAccessFactory(string connectionString)
         {
-            this.sqlConnection = sqlConnection ?? throw new ArgumentNullException(nameof(sqlConnection));
+            this.sqlConnection = new SqlConnection(connectionString) ?? throw new ArgumentNullException(nameof(connectionString));
         }
 
         /// <inheritdoc/>

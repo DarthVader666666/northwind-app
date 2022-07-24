@@ -1,6 +1,6 @@
 ﻿using Northwind.DataAccess;
 using Northwind.DataAccess.Products;
-using Northwind.Services.Entities;
+using Northwind.Services.Products;
 using AutoMapper;
 
 namespace Northwind.Services.DataAccess
@@ -14,13 +14,13 @@ namespace Northwind.Services.DataAccess
         {
             this.categoryService = factory.GetProductCategoryDataAccessObject();
             this.mapper = new Mapper(new MapperConfiguration(conf =>
-            conf.CreateMap<ProductCategoryTransferObject, Category>()));
+            conf.CreateMap<ProductCategoryTransferObject, ProductCategory>()));
         }
 
-        public Task<int> CreateCategoryAsync(Category productCategory)
+        public Task<int> CreateCategoryAsync(ProductCategory productCategory)
         {
             var mapper = new Mapper(new MapperConfiguration(conf =>
-            conf.CreateMap<Category, ProductCategoryTransferObject>()));
+            conf.CreateMap<ProductCategory, ProductCategoryTransferObject>()));
 
             var category = mapper.Map<ProductCategoryTransferObject>(productCategory);
 
@@ -32,39 +32,39 @@ namespace Northwind.Services.DataAccess
             return Task.Run(() => this.categoryService.DeleteProductCategory(categoryId));
         }
 
-        public async IAsyncEnumerable<Category> LookupCategoriesByNameAsync(ICollection<string> names)
+        public async IAsyncEnumerable<ProductCategory> LookupCategoriesByNameAsync(ICollection<string> names)
         {
             await foreach (var item in this.categoryService.SelectProductCategoriesByName(names))
             {
-                yield return this.mapper.Map<Category>(item);
+                yield return this.mapper.Map<ProductCategory>(item);
             }
         }
 
-        public async IAsyncEnumerable<Category> GetCategoriesAsync(int offset, int limit)
+        public async IAsyncEnumerable<ProductCategory> GetCategoriesAsync(int offset, int limit)
         {
             await foreach (var item in this.categoryService.SelectProductCategories(offset, limit))
             { 
-                yield return this.mapper.Map<Category>(item);
+                yield return this.mapper.Map<ProductCategory>(item);
             }
         }
 
-        public Task<(bool, Category)> TryGetCategoryAsync(int categoryId)
+        public Task<(bool, ProductCategory)> TryGetCategoryAsync(int categoryId)
         {
             return Task.Run(() =>
             {
                 var category = this.categoryService.FindProductCategory(categoryId);
-                return (category is not null, this.mapper.Map<Category>(category));
+                return (category is not null, this.mapper.Map<ProductCategory>(category));
             });
         }
 
-        public Task<bool> UpdateCategoriesAsync(int categoryId, Category productCategory)
+        public Task<bool> UpdateCategoriesAsync(int categoryId, ProductCategory productCategory)
         {
             return Task.Run(() =>
             {
                 productCategory.CategoryId = categoryId;
 
                 var mapper = new Mapper(new MapperConfiguration(conf =>
-                conf.CreateMap<Category, ProductCategoryTransferObject>()));
+                conf.CreateMap<ProductCategory, ProductCategoryTransferObject>()));
 
                 var category = mapper.Map<ProductCategoryTransferObject>(productCategory); 
 

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Northwind.Services.Entities;
-
-namespace Northwind.Services.Employees
+﻿namespace Northwind.Services.Employees
 {
     /// <summary>
     /// Represents a management service for employees.

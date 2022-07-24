@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Northwind.Services.Employees;
-using Northwind.Services.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

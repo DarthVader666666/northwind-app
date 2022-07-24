@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Northwind.Services.Entities;
+using Northwind.Services.EntityFrameworkCore.Entities;
 
 #nullable disable
 
@@ -7,89 +7,88 @@ namespace Northwind.Services.EntityFrameworkCore.Context
 {
     public partial class NorthwindContext : DbContext
     {
-        public NorthwindContext()
-        {
-        }
-
         public NorthwindContext(DbContextOptions<NorthwindContext> options)
             : base(options)
         {
+            this.Database.EnsureCreated();
         }
 
-        public virtual DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; }
-        public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<CategorySalesFor1997> CategorySalesFor1997s { get; set; }
-        public virtual DbSet<CurrentProductList> CurrentProductLists { get; set; }
-        public virtual DbSet<Customer> Customers { get; set; }
-        public virtual DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; }
-        public virtual DbSet<CustomerCustomerDemo> CustomerCustomerDemos { get; set; }
-        public virtual DbSet<CustomerDemographic> CustomerDemographics { get; set; }
-        public virtual DbSet<Employee> Employees { get; set; }
-        public virtual DbSet<EmployeeTerritory> EmployeeTerritories { get; set; }
-        public virtual DbSet<Invoice> Invoices { get; set; }
-        public virtual DbSet<Order> Orders { get; set; }
-        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
-        public virtual DbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; }
-        public virtual DbSet<OrderSubtotal> OrderSubtotals { get; set; }
-        public virtual DbSet<OrdersQry> OrdersQries { get; set; }
-        public virtual DbSet<Product> Products { get; set; }
-        public virtual DbSet<ProductSalesFor1997> ProductSalesFor1997s { get; set; }
-        public virtual DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; }
-        public virtual DbSet<ProductsByCategory> ProductsByCategories { get; set; }
-        public virtual DbSet<QuarterlyOrder> QuarterlyOrders { get; set; }
-        public virtual DbSet<Region> Regions { get; set; }
-        public virtual DbSet<SalesByCategory> SalesByCategories { get; set; }
-        public virtual DbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; }
-        public virtual DbSet<Shipper> Shippers { get; set; }
-        public virtual DbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; }
-        public virtual DbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; }
-        public virtual DbSet<Supplier> Suppliers { get; set; }
-        public virtual DbSet<Territory> Territories { get; set; }
+        public virtual DbSet<AlphabeticalListOfProductEntity> AlphabeticalListOfProducts { get; set; }
+        public virtual DbSet<CategoryEntity> Categories { get; set; }
+        public virtual DbSet<CategorySalesFor1997Entity> CategorySalesFor1997s { get; set; }
+        public virtual DbSet<CurrentProductListEntity> CurrentProductLists { get; set; }
+        public virtual DbSet<CustomerEntity> Customers { get; set; }
+        public virtual DbSet<CustomerAndSuppliersByCityEntity> CustomerAndSuppliersByCities { get; set; }
+        public virtual DbSet<CustomerCustomerDemoEntity> CustomerCustomerDemos { get; set; }
+        public virtual DbSet<CustomerDemographicEntity> CustomerDemographics { get; set; }
+        public virtual DbSet<EmployeeEntity> Employees { get; set; }
+        public virtual DbSet<EmployeeTerritoryEntity> EmployeeTerritories { get; set; }
+        public virtual DbSet<InvoiceEntity> Invoices { get; set; }
+        public virtual DbSet<OrderEntity> Orders { get; set; }
+        public virtual DbSet<OrderDetailEntity> OrderDetails { get; set; }
+        public virtual DbSet<OrderDetailsExtendedEntity> OrderDetailsExtendeds { get; set; }
+        public virtual DbSet<OrderSubtotalEntity> OrderSubtotals { get; set; }
+        public virtual DbSet<OrdersQryEntity> OrdersQries { get; set; }
+        public virtual DbSet<ProductEntity> Products { get; set; }
+        public virtual DbSet<ProductSalesFor1997Entity> ProductSalesFor1997s { get; set; }
+        public virtual DbSet<ProductsAboveAveragePriceEntity> ProductsAboveAveragePrices { get; set; }
+        public virtual DbSet<ProductsByCategoryEntity> ProductsByCategories { get; set; }
+        public virtual DbSet<QuarterlyOrderEntity> QuarterlyOrders { get; set; }
+        public virtual DbSet<RegionEntity> Regions { get; set; }
+        public virtual DbSet<SalesByCategoryEntity> SalesByCategories { get; set; }
+        public virtual DbSet<SalesTotalsByAmountEntity> SalesTotalsByAmounts { get; set; }
+        public virtual DbSet<ShipperEntity> Shippers { get; set; }
+        public virtual DbSet<SummaryOfSalesByQuarterEntity> SummaryOfSalesByQuarters { get; set; }
+        public virtual DbSet<SummaryOfSalesByYearEntity> SummaryOfSalesByYears { get; set; }
+        public virtual DbSet<SupplierEntity> Suppliers { get; set; }
+        public virtual DbSet<TerritoryEntity> Territories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //if (!optionsBuilder.IsConfigured)
+            //if (optionsBuilder.IsConfigured)
             //{
-            //    optionsBuilder.UseSqlServer("data source=(localdb)\\MSSQLLocalDB;Integrated Security=True;Database=Northwind;");
-            //}
-
-            //optionsBuilder.UseInMemoryDatabase("Northwind");
+            //    optionsBuilder.UseInMemoryDatabase("Northwind");
+            //}            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            modelBuilder.Entity<AlphabeticalListOfProduct>(entity =>
+            modelBuilder.Entity<AlphabeticalListOfProductEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Alphabetical list of products");
             });
 
-            modelBuilder.Entity<CategorySalesFor1997>(entity =>
+            modelBuilder.Entity<CategorySalesFor1997Entity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Category Sales for 1997");
             });
 
-            modelBuilder.Entity<CurrentProductList>(entity =>
+            modelBuilder.Entity<CurrentProductListEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Current Product List");
 
                 entity.Property(e => e.ProductId).ValueGeneratedOnAdd();
             });
 
-            modelBuilder.Entity<Customer>(entity =>
+            modelBuilder.Entity<CustomerEntity>(entity =>
             {
                 entity.Property(e => e.CustomerId).IsFixedLength(true);
             });
 
-            modelBuilder.Entity<CustomerAndSuppliersByCity>(entity =>
+            modelBuilder.Entity<CustomerAndSuppliersByCityEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Customer and Suppliers by City");
 
                 entity.Property(e => e.Relationship).IsUnicode(false);
             });
 
-            modelBuilder.Entity<CustomerCustomerDemo>(entity =>
+            modelBuilder.Entity<CustomerCustomerDemoEntity>(entity =>
             {
                 entity.HasKey(e => new { e.CustomerId, e.CustomerTypeId })
                     .IsClustered(false);
@@ -111,7 +110,7 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                     .HasConstraintName("FK_CustomerCustomerDemo");
             });
 
-            modelBuilder.Entity<CustomerDemographic>(entity =>
+            modelBuilder.Entity<CustomerDemographicEntity>(entity =>
             {
                 entity.HasKey(e => e.CustomerTypeId)
                     .IsClustered(false);
@@ -119,7 +118,7 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                 entity.Property(e => e.CustomerTypeId).IsFixedLength(true);
             });
 
-            modelBuilder.Entity<Employee>(entity =>
+            modelBuilder.Entity<EmployeeEntity>(entity =>
             {
                 entity.HasOne(d => d.ReportsToNavigation)
                     .WithMany(p => p.InverseReportsToNavigation)
@@ -127,7 +126,7 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                     .HasConstraintName("FK_Employees_Employees");
             });
 
-            modelBuilder.Entity<EmployeeTerritory>(entity =>
+            modelBuilder.Entity<EmployeeTerritoryEntity>(entity =>
             {
                 entity.HasKey(e => new { e.EmployeeId, e.TerritoryId })
                     .IsClustered(false);
@@ -145,14 +144,15 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                     .HasConstraintName("FK_EmployeeTerritories_Territories");
             });
 
-            modelBuilder.Entity<Invoice>(entity =>
+            modelBuilder.Entity<InvoiceEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Invoices");
 
                 entity.Property(e => e.CustomerId).IsFixedLength(true);
             });
 
-            modelBuilder.Entity<Order>(entity =>
+            modelBuilder.Entity<OrderEntity>(entity =>
             {
                 entity.Property(e => e.CustomerId).IsFixedLength(true);
 
@@ -174,7 +174,7 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                     .HasConstraintName("FK_Orders_Shippers");
             });
 
-            modelBuilder.Entity<OrderDetail>(entity =>
+            modelBuilder.Entity<OrderDetailEntity>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
                     .HasName("PK_Order_Details");
@@ -194,24 +194,27 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                     .HasConstraintName("FK_Order_Details_Products");
             });
 
-            modelBuilder.Entity<OrderDetailsExtended>(entity =>
+            modelBuilder.Entity<OrderDetailsExtendedEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Order Details Extended");
             });
 
-            modelBuilder.Entity<OrderSubtotal>(entity =>
+            modelBuilder.Entity<OrderSubtotalEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Order Subtotals");
             });
 
-            modelBuilder.Entity<OrdersQry>(entity =>
+            modelBuilder.Entity<OrdersQryEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Orders Qry");
 
                 entity.Property(e => e.CustomerId).IsFixedLength(true);
             });
 
-            modelBuilder.Entity<Product>(entity =>
+            modelBuilder.Entity<ProductEntity>(entity =>
             {
                 entity.Property(e => e.ReorderLevel).HasDefaultValueSql("((0))");
 
@@ -232,29 +235,33 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                     .HasConstraintName("FK_Products_Suppliers");
             });
 
-            modelBuilder.Entity<ProductSalesFor1997>(entity =>
+            modelBuilder.Entity<ProductSalesFor1997Entity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Product Sales for 1997");
             });
 
-            modelBuilder.Entity<ProductsAboveAveragePrice>(entity =>
+            modelBuilder.Entity<ProductsAboveAveragePriceEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Products Above Average Price");
             });
 
-            modelBuilder.Entity<ProductsByCategory>(entity =>
+            modelBuilder.Entity<ProductsByCategoryEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Products by Category");
             });
 
-            modelBuilder.Entity<QuarterlyOrder>(entity =>
+            modelBuilder.Entity<QuarterlyOrderEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Quarterly Orders");
 
                 entity.Property(e => e.CustomerId).IsFixedLength(true);
             });
 
-            modelBuilder.Entity<Region>(entity =>
+            modelBuilder.Entity<RegionEntity>(entity =>
             {
                 entity.HasKey(e => e.RegionId)
                     .IsClustered(false);
@@ -264,27 +271,31 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                 entity.Property(e => e.RegionDescription).IsFixedLength(true);
             });
 
-            modelBuilder.Entity<SalesByCategory>(entity =>
+            modelBuilder.Entity<SalesByCategoryEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Sales by Category");
             });
 
-            modelBuilder.Entity<SalesTotalsByAmount>(entity =>
+            modelBuilder.Entity<SalesTotalsByAmountEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Sales Totals by Amount");
             });
 
-            modelBuilder.Entity<SummaryOfSalesByQuarter>(entity =>
+            modelBuilder.Entity<SummaryOfSalesByQuarterEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Summary of Sales by Quarter");
             });
 
-            modelBuilder.Entity<SummaryOfSalesByYear>(entity =>
+            modelBuilder.Entity<SummaryOfSalesByYearEntity>(entity =>
             {
+                entity.HasNoKey();
                 entity.ToView("Summary of Sales by Year");
             });
 
-            modelBuilder.Entity<Territory>(entity =>
+            modelBuilder.Entity<TerritoryEntity>(entity =>
             {
                 entity.HasKey(e => e.TerritoryId)
                     .IsClustered(false);
@@ -296,14 +307,14 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                     .HasForeignKey(d => d.RegionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Territories_Region");
+
+                if (this.Database.IsInMemory())
+                {
+                    modelBuilder.Seed();
+                }
             });
 
             OnModelCreatingPartial(modelBuilder);
-
-            if (this.Database.IsInMemory())
-            {
-                modelBuilder.Seed();
-            }
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

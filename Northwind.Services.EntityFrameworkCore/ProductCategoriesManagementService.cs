@@ -1,22 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Northwind.Services.Entities;
+using Northwind.Services.Products;
 using Northwind.Services.EntityFrameworkCore.Context;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Northwind.Services.EntityFrameworkCore.Entities;
+using AutoMapper;
 
 namespace Northwind.Services.EntityFrameworkCore
 {
     public class ProductCategoriesManagementService : IProductCategoriesManagementService
     {
         private readonly NorthwindContext context;
+        private readonly IMapper toEntitymapper;
+        private readonly IMapper fromEntitymapper;
 
         public ProductCategoriesManagementService(NorthwindContext context)
         {
             this.context = context;
+            this.toEntitymapper = new Mapper(new MapperConfiguration(conf =>
+            conf.CreateMap<ProductCategory, CategoryEntity>()));
+            this.fromEntitymapper = new Mapper(new MapperConfiguration(conf =>
+            conf.CreateMap<CategoryEntity, ProductCategory>()));
         }
 
-        public async Task<int> CreateCategoryAsync(Category productCategory)
+        public async Task<int> CreateCategoryAsync(ProductCategory productCategory)
         {
             var id = 1;
 
@@ -26,8 +31,10 @@ namespace Northwind.Services.EntityFrameworkCore
                 id++;
             }
 
-            productCategory.CategoryId = id;
-            await this.context.Categories.AddAsync(productCategory);
+            var entity = this.toEntitymapper.Map<CategoryEntity>(productCategory);
+
+            entity.CategoryId = id;
+            await this.context.Categories.AddAsync(entity);
             await this.context.SaveChangesAsync();
 
             return id;
@@ -47,39 +54,46 @@ namespace Northwind.Services.EntityFrameworkCore
             return true;
         }
 
-        public IAsyncEnumerable<Category> LookupCategoriesByNameAsync(ICollection<string> names)
+        public async IAsyncEnumerable<ProductCategory> LookupCategoriesByNameAsync(ICollection<string> names)
         {
-            var categories = this.context.Categories.Where(c => names.Any(n => n == c.CategoryName));
+            var categories = this.context.Categories.Where(c => names.Any(n => n == c.CategoryName)).AsAsyncEnumerable();
 
-            if (!categories.Any())
+            //if (!categories.Any())
+            //{
+            //    return null;
+            //}
+
+            await foreach (var item in categories)
             {
-                return null;
+                yield return this.fromEntitymapper.Map<ProductCategory>(item);
             }
-
-            return categories.AsAsyncEnumerable();
         }
 
-        public IAsyncEnumerable<Category> GetCategoriesAsync(int offset, int limit)
+        public async IAsyncEnumerable<ProductCategory> GetCategoriesAsync(int offset, int limit)
         {
-            return this.context.Categories.Skip(offset).Take(limit).AsAsyncEnumerable();
+            var categories = this.context.Categories.Skip(offset).Take(limit).AsAsyncEnumerable();
+
+            await foreach (var item in categories)
+            {
+                yield return this.fromEntitymapper.Map<ProductCategory>(item);
+            }
         }
 
-        public async Task<(bool, Category)> TryGetCategoryAsync(int categoryId)
+        public async Task<(bool, ProductCategory)> TryGetCategoryAsync(int categoryId)
         {
-            var productCategory = await Task.Run(async () =>
-            await this.context.Categories.FindAsync(categoryId));
+            var entity = await this.context.Categories.FindAsync(categoryId);
 
-            return (productCategory is not null, productCategory);
+            return (entity is not null, this.fromEntitymapper.Map< ProductCategory>(entity));
         }
 
-        public async Task<bool> UpdateCategoriesAsync(int categoryId, Category productCategory)
+        public async Task<bool> UpdateCategoriesAsync(int categoryId, ProductCategory productCategory)
         {
             if (productCategory.CategoryId != categoryId)
             {
                 return false;
             }
 
-            this.context.Entry(productCategory).State = EntityState.Modified;
+            this.context.Entry(this.toEntitymapper.Map<CategoryEntity>(productCategory)).State = EntityState.Modified;
             await this.context.SaveChangesAsync();
 
             return true;

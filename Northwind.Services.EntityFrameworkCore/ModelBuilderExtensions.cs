@@ -1,12 +1,10 @@
-﻿using Northwind.Services.Entities;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Northwind.Services.Products;
+using Northwind.Services.Employees;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using AutoMapper;
+using Northwind.Services.EntityFrameworkCore.Entities;
 
 namespace Northwind.Services.EntityFrameworkCore
 {
@@ -15,26 +13,35 @@ namespace Northwind.Services.EntityFrameworkCore
         private const int NumberOfCategories = 10;
         private const int NumberOfProducts = 30;
         private const int NumberOfEmployees = 15;
+
         private static readonly string directory = Directory.GetParent(Directory.GetCurrentDirectory()).
             ToString() + "\\Northwind.Services.EntityFrameworkCore\\";
         private static IConfiguration configuration = new ConfigurationBuilder().
             SetBasePath(directory).AddJsonFile("appsettings.json").Build();
 
+        private static readonly IMapper toProductEntityMapper = new Mapper(new MapperConfiguration(conf =>
+            conf.CreateMap<Product, ProductEntity> ()));
+        private static readonly IMapper toCategoryEntityMapper = new Mapper(new MapperConfiguration(conf =>
+            conf.CreateMap<ProductCategory, CategoryEntity>()));
+        private static readonly IMapper toEmployeeEntityMapper = new Mapper(new MapperConfiguration(conf =>
+            conf.CreateMap<Employee, EmployeeEntity>()));
+
+
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Product>().HasData(GenerateProducts());
-            modelBuilder.Entity<Category>().HasData(GenerateCategories());
-            modelBuilder.Entity<Employee>().HasData(GenerateEmployees());
+            modelBuilder.Entity<ProductEntity>().HasData(GenerateProducts());
+            modelBuilder.Entity<CategoryEntity>().HasData(GenerateCategories());
+            modelBuilder.Entity<EmployeeEntity>().HasData(GenerateEmployees());
         }
 
-        private static IEnumerable<Product> GenerateProducts()
+        private static IEnumerable<ProductEntity> GenerateProducts()
         {
             int id = 1;
 
             foreach (var item in GenerateProductsCore())
             {
                 item.ProductId = id++;
-                yield return item;
+                yield return toProductEntityMapper.Map<ProductEntity>(item);
             }
 
             static IEnumerable<Product> GenerateProductsCore()
@@ -53,7 +60,7 @@ namespace Northwind.Services.EntityFrameworkCore
             }
         }
 
-        private static IEnumerable<Category> GenerateCategories()
+        private static IEnumerable<CategoryEntity> GenerateCategories()
         {
             int id = 1;
             var directoryInfo = new DirectoryInfo(configuration["picturePath"]);
@@ -73,26 +80,26 @@ namespace Northwind.Services.EntityFrameworkCore
 
                 item.CategoryId = id++;
 
-                yield return item;
+                yield return toCategoryEntityMapper.Map<CategoryEntity>(item);
             }
 
-            static IEnumerable<Category> GenerateCategoriesCore()
+            static IEnumerable<ProductCategory> GenerateCategoriesCore()
             {
-                return new Faker<Category>().
+                return new Faker<ProductCategory>().
                     RuleFor(product => product.CategoryName, faker => faker.Commerce.Categories(1).First()).
                     RuleFor(product => product.Description, faker => faker.Commerce.ProductDescription()).
                     Generate(NumberOfCategories);
             }
         }
 
-        private static IEnumerable<Employee> GenerateEmployees()
+        private static IEnumerable<EmployeeEntity> GenerateEmployees()
         {
             int id = 1;
 
             foreach (var item in GenerateEmployeesCore())
             {
                 item.EmployeeId = id++;
-                yield return item;
+                yield return toEmployeeEntityMapper.Map<EmployeeEntity>(item);
             }
 
             static IEnumerable<Employee> GenerateEmployeesCore()
@@ -101,8 +108,8 @@ namespace Northwind.Services.EntityFrameworkCore
                     RuleFor(employee => employee.LastName, faker => faker.Person.LastName).
                     RuleFor(employee => employee.FirstName, faker => faker.Person.FirstName).
                     RuleFor(employee => employee.Title, faker => faker.Company.CompanyName()).
-                    RuleFor(employee => employee.BirthDate, faker => faker.Person.DateOfBirth).
-                    RuleFor(employee => employee.HireDate, faker => faker.Date.Past(new Random().Next(1, 10))).
+                    RuleFor(employee => employee.BirthDate, faker => faker.Person.DateOfBirth.ToShortDateString()).
+                    RuleFor(employee => employee.HireDate, faker => faker.Date.Past(new Random().Next(1, 10)).ToShortDateString()).
                     RuleFor(employee => employee.Address, faker => faker.Person.Address.Suite).
                     RuleFor(employee => employee.City, faker => faker.Person.Address.City).
                     RuleFor(employee => employee.Region, faker => faker.Address.State()).

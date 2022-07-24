@@ -1,9 +1,8 @@
 ﻿using Northwind.Services.EntityFrameworkCore.Context;
-using Northwind.Services.Entities;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Northwind.Services.EntityFrameworkCore.Entities;
+using Northwind.Services.Products;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace Northwind.Services.EntityFrameworkCore
 {
@@ -13,10 +12,16 @@ namespace Northwind.Services.EntityFrameworkCore
     public sealed class ProductManagementService : IProductManagementService
     {
         private readonly NorthwindContext context;
+        private readonly IMapper toEntitymapper;
+        private readonly IMapper fromEntitymapper;
 
         public ProductManagementService(NorthwindContext context)
         {
             this.context = context;
+            this.toEntitymapper = new Mapper(new MapperConfiguration(conf =>
+            conf.CreateMap<Product, ProductEntity>()));
+            this.fromEntitymapper = new Mapper(new MapperConfiguration(conf =>
+            conf.CreateMap<ProductEntity, Product>()));
         }
 
         public async Task<int> CreateProductAsync(Product product)
@@ -29,8 +34,10 @@ namespace Northwind.Services.EntityFrameworkCore
                 id++;
             }
 
-            product.ProductId = id;
-            await this.context.Products.AddAsync(product);
+            var entity = this.toEntitymapper.Map<ProductEntity>(product);
+
+            entity.ProductId = id;
+            await this.context.Products.AddAsync(entity);
             await this.context.SaveChangesAsync();
 
             return id;
@@ -50,28 +57,47 @@ namespace Northwind.Services.EntityFrameworkCore
             return true;
         }
 
-        public IAsyncEnumerable<Product> LookupProductsByNameAsync(List<string> names)
+        public async IAsyncEnumerable<Product> LookupProductsByNameAsync(List<string> names)
         {
-            var result = this.context.Products.Where(p => names.Any(n => n == p.ProductName));
+            var products = this.context.Products.Where(p => names.Any(n => n == p.ProductName)).AsAsyncEnumerable();
 
-            if (!result.Any())
+            //if (!result.Any())
+            //{
+            //    return null;
+            //}
+
+            await foreach (var item in products)
             {
-                return null;
+                yield return this.fromEntitymapper.Map<Product>(item);
             }
-
-            return result.AsAsyncEnumerable();
         }
 
-        public IAsyncEnumerable<Product> GetProductsAsync(int offset, int limit) =>
-            this.context.Products.Skip(offset).Take(limit).AsAsyncEnumerable();
+        public async IAsyncEnumerable<Product> GetProductsAsync(int offset, int limit)
+        { 
+            var products = this.context.Products.Skip(offset).Take(limit).AsAsyncEnumerable();
 
-        public IAsyncEnumerable<Product> GetProductsForCategoryAsync(int categoryId) =>
-            this.context.Products.Where(p => p.CategoryId == categoryId).AsAsyncEnumerable();
+            await foreach (var item in products)
+            {
+                yield return this.fromEntitymapper.Map<Product>(item);
+            }
+        }
+
+        public async IAsyncEnumerable<Product> GetProductsForCategoryAsync(int categoryId)
+        { 
+            var products = this.context.Products.Where(p => p.CategoryId == categoryId).AsAsyncEnumerable();
+
+            await foreach (var item in products)
+            {
+                yield return this.fromEntitymapper.Map<Product>(item);
+            }
+        }
+        
 
         public async Task<(bool result, Product product)> TryGetProductAsync(int productId)
         {
-            var product = await this.context.Products.FindAsync(productId);
-            return (product is not null, product);
+            var entity = await this.context.Products.FindAsync(productId);
+
+            return (entity is not null, this.fromEntitymapper.Map<Product>(entity));
         }
 
         public async Task<bool> UpdateProductAsync(int productId, Product product)
@@ -81,7 +107,7 @@ namespace Northwind.Services.EntityFrameworkCore
                 return false;
             }
 
-            this.context.Entry(product).State = EntityState.Modified;
+            this.context.Entry(this.toEntitymapper.Map<ProductEntity>(product)).State = EntityState.Modified;
             await this.context.SaveChangesAsync();
 
             return true;

@@ -8,7 +8,6 @@ using Northwind.Services.EntityFrameworkCore.Blogging;
 using Northwind.Services.EntityFrameworkCore.Blogging.Context;
 using Northwind.DataAccess;
 using Northwind.DataAccess.SqlServer;
-using System.Data.SqlClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -32,19 +31,11 @@ namespace NorthwindApiApp
         {
             switch (this.Configuration["DataStorage"].ToUpper())
             {
-                case "SQL":
+                case "ADO_SQL":
                     {
-                        services.AddScoped<SqlConnection>((service) =>
-                        {
-                            var sqlConnection =
-                            new SqlConnection(this.Configuration["ConnectionString"]);
-                            sqlConnection.Open();
-                            return sqlConnection;
-                        });
-
                         services.AddScoped<NorthwindDataAccessFactory, SqlServerDataAccessFactory>(
                             serviceProvider => new SqlServerDataAccessFactory(
-                                serviceProvider.GetService<SqlConnection>()));
+                                this.Configuration["ConnectionString"]));
 
                         services.AddScoped<IProductManagementService, ProductManagementDataAccessService>(
                             serviceProvider => new ProductManagementDataAccessService(
@@ -63,16 +54,39 @@ namespace NorthwindApiApp
                                 serviceProvider.GetService<NorthwindDataAccessFactory>()));
 
                         services.AddScoped<IBloggingService, BloggingService>(serviceProvider =>
-                        new BloggingService(new DesignTimeBloggingContextFactory(),
-                        serviceProvider.GetService<IEmployeeManagementService>(),
-                        serviceProvider.GetService<IProductManagementService>()));
+                        new BloggingService(new DesignTimeBloggingContextFactory()));
 
-                        services.AddScoped<NorthwindDataAccessFactory, SqlServerDataAccessFactory>();
                     }; break;
+
+                case "EF_SQL":
+                    {
+                        services.AddDbContext<NorthwindContext>(options =>
+                        options.UseSqlServer(this.Configuration["ConnectionString"]));
+
+                        services.AddScoped<IProductManagementService, ProductManagementService>(
+                            serviceProvider => new ProductManagementService(
+                                serviceProvider.GetService<NorthwindContext>()));
+
+                        services.AddScoped<IProductCategoriesManagementService, ProductCategoriesManagementService>(
+                            serviceProvider => new ProductCategoriesManagementService(
+                                serviceProvider.GetService<NorthwindContext>()));
+
+                        services.AddScoped<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementService>(
+                            serviceProvider => new ProductCategoryPicturesManagementService(
+                                serviceProvider.GetService<NorthwindContext>()));
+
+                        services.AddScoped<IEmployeeManagementService, EmployeeManagementService>(
+                            serviceProvider => new EmployeeManagementService(
+                                 serviceProvider.GetService<NorthwindContext>()));
+
+                        services.AddScoped<IBloggingService, BloggingService>(serviceProvider =>
+                        new BloggingService(new DesignTimeBloggingContextFactory()));
+
+                    };break;
 
                 case "IN_MEMORY":
                     {
-                        services.AddDbContext<NorthwindContext>(opt => opt.UseInMemoryDatabase("Northwind"));
+                        services.AddDbContext<NorthwindContext>(options => options.UseInMemoryDatabase("Northwind"));
 
                         services.AddScoped<IProductManagementService, ProductManagementService>(
                             serviceProvider => new ProductManagementService(serviceProvider.GetService<NorthwindContext>()));

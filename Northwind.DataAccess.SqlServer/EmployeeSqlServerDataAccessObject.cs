@@ -10,7 +10,7 @@ namespace Northwind.DataAccess.SqlServer
     /// <summary>
     /// Represents a SQL Server-tailored DAO for Northwind products.
     /// </summary>
-    public sealed class EmployeeSqlServerDataAccessObject : IEmployeeDataAccessObject
+    public sealed class EmployeeSqlServerDataAccessObject : IEmployeeDataAccessObject, IDisposable
     {
         private readonly SqlConnection connection;
 
@@ -21,6 +21,8 @@ namespace Northwind.DataAccess.SqlServer
         public EmployeeSqlServerDataAccessObject(SqlConnection connection)
         {
             this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            this.connection.Close();
+            this.connection.Open();
         }
 
         /// <inheritdoc/>
@@ -638,6 +640,11 @@ namespace Northwind.DataAccess.SqlServer
                     yield return CreateEmployee(reader);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            this.connection.Close();
         }
     }
 }

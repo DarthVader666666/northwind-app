@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Northwind.Services.Blogging;
 
 namespace Northwind.Services.EntityFrameworkCore.Blogging.Context

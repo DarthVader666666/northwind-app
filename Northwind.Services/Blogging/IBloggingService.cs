@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Northwind.Services.Entities;
-
-namespace Northwind.Services.Blogging
+﻿namespace Northwind.Services.Blogging
 {
     public interface IBloggingService
     {
@@ -13,14 +6,14 @@ namespace Northwind.Services.Blogging
         /// Shows a list of blogArticles using specified offset and limit for pagination.
         /// </summary>
         /// <returns>A <see cref="IAsyncEnumerable{T}"/> of <see cref="BlogArticle"/>.</returns>
-        IAsyncEnumerable<(BlogArticle blog, Employee employee)> GetBlogArticlesAsync();
+        IAsyncEnumerable<BlogArticle> GetBlogArticlesAsync();
 
         /// <summary>
         /// Try to show a blogArticle with specified identifier.
         /// </summary>
         /// <param name="blogArticleId">A blogArticle identifier.</param>
         /// <returns>Returns true if a blogArticle is returned; otherwise false.</returns>
-        Task<(bool result, (BlogArticle blog, Employee employee))> TryGetBlogArticleAsync(int blogArticleId);
+        Task<(bool result, BlogArticle blog)> TryGetBlogArticleAsync(int blogArticleId);
 
         /// <summary>
         /// Creates a new blogArticle.
@@ -56,7 +49,7 @@ namespace Northwind.Services.Blogging
         /// </summary>
         /// <param name="blogArticleId"></param>
         /// <returns></returns>
-        IAsyncEnumerable<Product> GetProductsForBlogArticleAsync(int blogArticleId);
+        IAsyncEnumerable<BlogArticleProduct> GetBlogArticleProductsAsync(int blogArticleId);
 
         /// <summary>
         /// CreateBlogArticleProduct.
@@ -64,7 +57,7 @@ namespace Northwind.Services.Blogging
         /// <param name="blogArticle"></param>
         /// <param name="productId"></param>
         /// <returns></returns>
-        Task<int> CreateBlogArticleProductAsync(int blogArticleId, int productId);
+        Task<bool> CreateBlogArticleProductAsync(int blogArticleId, int productId);
 
         /// <summary>
         /// DestroyBlogArticleProductAsync.

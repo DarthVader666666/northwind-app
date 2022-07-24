@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Northwind.Services.Employees;
 using Northwind.Services.EntityFrameworkCore.Context;
-using Northwind.Services.Entities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Northwind.Services.EntityFrameworkCore.Entities;
+using AutoMapper;
 
 namespace Northwind.Services.EntityFrameworkCore
 {
@@ -14,10 +12,16 @@ namespace Northwind.Services.EntityFrameworkCore
     public class EmployeeManagementService : IEmployeeManagementService
     {
         private readonly NorthwindContext context;
+        private readonly IMapper toEntitymapper;
+        private readonly IMapper fromEntitymapper;
 
         public EmployeeManagementService(NorthwindContext context)
         {
             this.context = context;
+            this.toEntitymapper = new Mapper(new MapperConfiguration(conf =>
+            conf.CreateMap<Employee, EmployeeEntity>()));
+            this.fromEntitymapper = new Mapper(new MapperConfiguration(conf =>
+            conf.CreateMap<EmployeeEntity, Employee>()));
         }
 
         public async Task<int> CreateEmployeeAsync(Employee employee)
@@ -30,8 +34,10 @@ namespace Northwind.Services.EntityFrameworkCore
                 id++;
             }
 
-            employee.EmployeeId = id;
-            await this.context.Employees.AddAsync(employee);
+            var entity = this.toEntitymapper.Map<EmployeeEntity>(employee);
+
+            entity.EmployeeId = id;
+            await this.context.Employees.AddAsync(entity);
             await this.context.SaveChangesAsync();
 
             return id;
@@ -51,27 +57,31 @@ namespace Northwind.Services.EntityFrameworkCore
             return true;
         }
 
-        public IAsyncEnumerable<Employee> LookupEmployeesByLastNameAsync(ICollection<string> names)
+        public async IAsyncEnumerable<Employee> LookupEmployeesByLastNameAsync(ICollection<string> names)
         {
-            var employees = this.context.Employees.Where(e => names.Any(n => n == e.LastName));
+            var employees = this.context.Employees.Where(e => names.Any(n => n == e.LastName)).AsAsyncEnumerable();
 
-            if (!employees.Any())
+            await foreach(var item in employees)
             {
-                return null;
+                yield return this.fromEntitymapper.Map<Employee>(item);
             }
-
-            return employees.AsAsyncEnumerable();
         }
 
-        public IAsyncEnumerable<Employee> GetEmployeesAsync(int offset, int limit) =>
-            this.context.Employees.Skip(offset).Take(limit).AsAsyncEnumerable();
+        public async IAsyncEnumerable<Employee> GetEmployeesAsync(int offset, int limit)
+        {
+            var employees = this.context.Employees.Skip(offset).Take(limit).AsAsyncEnumerable();
+
+            await foreach (var item in employees)
+            {
+                yield return this.fromEntitymapper.Map<Employee>(item);
+            }
+        }
 
         public async Task<(bool, Employee)> TryGetEmployeeAsync(int employeeId)
         {
-            var employee = await Task.Run(async () =>
-            await this.context.Employees.FindAsync(employeeId));
+            var employee = await this.context.Employees.FindAsync(employeeId);
 
-            return (employee is not null, employee);
+            return (employee is not null, this.fromEntitymapper.Map<Employee>(employee));
         }
 
         public async Task<bool> UpdateEmployeeAsync(int employeeId, Employee employee)
@@ -81,12 +91,10 @@ namespace Northwind.Services.EntityFrameworkCore
                 return false;
             }
 
-            this.context.Entry(employee).State = EntityState.Modified;
+            this.context.Entry(this.toEntitymapper.Map<EmployeeEntity>(employee)).State = EntityState.Modified;
             await this.context.SaveChangesAsync();
 
             return true;
         }
     }
 }
-
-

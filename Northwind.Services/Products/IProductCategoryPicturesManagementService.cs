@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-
-namespace Northwind.Services
+﻿namespace Northwind.Services
 {
     public interface IProductCategoryPicturesManagementService
     {

@@ -1,34 +1,21 @@
-﻿using Northwind.Services.Blogging;
-using Northwind.Services.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Northwind.Services.Blogging;
 using Northwind.Services.EntityFrameworkCore.Blogging.Context;
-using Northwind.Services.Employees;
 
 namespace Northwind.Services.EntityFrameworkCore.Blogging
 {
     public class BloggingService : IBloggingService
     {
         private readonly BloggingContext context;
-        private readonly IEmployeeManagementService employeeService;
-        private readonly IProductManagementService productService;
 
-        public BloggingService(DesignTimeBloggingContextFactory blogFactory,
-            IEmployeeManagementService employeeService,
-            IProductManagementService productService)
+        public BloggingService(DesignTimeBloggingContextFactory blogFactory)
         {
             this.context = blogFactory.CreateDbContext(null);
-            this.employeeService = employeeService;
-            this.productService = productService;
         }
 
         public async Task<int> CreateBlogArticleAsync(BlogArticle blogArticle)
         {
             blogArticle.PublishDate = DateTime.Now;
-            var task = await this.employeeService.TryGetEmployeeAsync(blogArticle.EmployeeId);
-
-            if (!task.result)
-            {
-                return -1;
-            }
 
             await this.context.BlogArticles.AddAsync(blogArticle);
             await this.context.SaveChangesAsync();
@@ -50,36 +37,21 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
             return true;
         }
 
-        public IAsyncEnumerable<(BlogArticle blog, Employee employee)> GetBlogArticlesAsync()
+        public IAsyncEnumerable<BlogArticle> GetBlogArticlesAsync()
         {
-            var blogs = this.context.BlogArticles.ToList();
-            var employees = this.employeeService.GetEmployeesAsync(0, 100).ToListAsync().Result;
-
-            var result = from b in blogs
-                         from e in employees
-                         where b.EmployeeId == e.EmployeeId
-                         select (b, e);
-
-            return result.ToAsyncEnumerable();
+            return this.context.BlogArticles.AsAsyncEnumerable();
         }
 
-        public async Task<(bool result, (BlogArticle blog, Employee employee))> TryGetBlogArticleAsync(int blogArticleId)
+        public async Task<(bool result, BlogArticle blog)> TryGetBlogArticleAsync(int blogArticleId)
         {
             var blog = await this.context.BlogArticles.FindAsync(blogArticleId).ConfigureAwait(false);
 
             if (blog is null)
             {
-                return (false, (null, null));
+                return (false, null);
             }
 
-            var employee = this.employeeService.TryGetEmployeeAsync(blog.EmployeeId).Result.employee;
-
-            if (employee is null)
-            {
-                return (false, (null, null));
-            }
-
-            return (true, (blog, employee));
+            return (true, blog);
         }
 
         public async Task<bool> UpdateBlogArticleAsync(int blogArticleId, BlogArticle blogArticle)
@@ -99,35 +71,34 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
             return false;
         }
 
-        public IAsyncEnumerable<Product> GetProductsForBlogArticleAsync(int blogArticleId)
+        public IAsyncEnumerable<BlogArticleProduct> GetBlogArticleProductsAsync(int blogArticleId)
         {
-            var blogArticleProducts = this.context.BlogArticleProducts.ToList();
+            var blogArticleProducts = 
+                this.context.BlogArticleProducts.AsAsyncEnumerable().
+                Where(x => x.BlogArticleId == blogArticleId);
 
-            return blogArticleProducts.Where(x => x.BlogArticleId == blogArticleId).
-                Select(x => this.productService.TryGetProductAsync(x.ProductId).Result.product).ToAsyncEnumerable();
+            return blogArticleProducts;
         }
 
-        public async Task<int> CreateBlogArticleProductAsync(int blogArticle, int productId)
+        public async Task<bool> CreateBlogArticleProductAsync(int blogArticleId, int productId)
         {
-            var productResult = await this.productService.TryGetProductAsync(productId);
-            var blogResult = await TryGetBlogArticleAsync(blogArticle);
-
-            if (!(productResult.result && blogResult.result))
+            var articleProduct = new BlogArticleProduct 
             {
-                return -1;
+                BlogArticleId = blogArticleId,
+                ProductId = productId,
+            };
+
+            try
+            {
+                await this.context.BlogArticleProducts.AddAsync(articleProduct);
+                await this.context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return false;
             }
 
-            var blogArticleProducts =
-                new BlogArticleProduct
-                {
-                    ProductId = productResult.product.ProductId,
-                    BlogArticleId = blogResult.Item2.blog.ArticleId,
-                };
-
-            await this.context.BlogArticleProducts.AddAsync(blogArticleProducts);
-            await this.context.SaveChangesAsync();
-
-            return blogArticleProducts.BlogArticleId;
+            return true;
         }
 
         public async Task<bool> DestroyBlogArticleProductAsync(int blogArticle, int productId)

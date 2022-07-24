@@ -1,11 +1,14 @@
 ﻿using Northwind.Services.Blogging;
+using NorthwindApiApp.Models;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Collections.Generic;
-using Northwind.Services.Entities;
 using System.IO;
 using System.Text.Json;
+using Northwind.Services.Employees;
+using Northwind.Services;
+using Northwind.Services.Products;
 
 namespace NorthwindApiApp.Controllers
 {
@@ -14,10 +17,16 @@ namespace NorthwindApiApp.Controllers
     public class BlogArticlesController : ControllerBase
     {
         private readonly IBloggingService blogService;
+        private readonly IEmployeeManagementService employeeService;
+        private readonly IProductManagementService productService;
 
-        public BlogArticlesController(IBloggingService blogService)
+        public BlogArticlesController(IBloggingService blogService,
+            IEmployeeManagementService employeeService,
+            IProductManagementService productService)
         {
             this.blogService = blogService;
+            this.employeeService = employeeService;
+            this.productService = productService;
         }
 
         [HttpPost]
@@ -28,14 +37,23 @@ namespace NorthwindApiApp.Controllers
                 return this.BadRequest();
             }
 
-            var id = await this.blogService.CreateBlogArticleAsync(blogArticle);
+            var employeeExists = this.employeeService.TryGetEmployeeAsync(blogArticle.EmployeeId).Result.result;
 
-            if (id == -1)
+            if (!employeeExists)
             {
                 return this.NotFound("No such employee.");
             }
 
-            return blogArticle is not null ? this.Ok($"New blog article created Id = {id}") : this.BadRequest();
+            await this.blogService.CreateBlogArticleAsync(blogArticle);
+
+            var responsePayload = new BlogArticleCreatedModel
+            {
+                Title = blogArticle.Title,
+                Text = blogArticle.Text,
+                AuthorId = blogArticle.ArticleId,
+            };
+
+            return blogArticle is not null ? this.Ok(responsePayload) : this.BadRequest();
         }
 
         [HttpDelete("{id:int}")]
@@ -46,79 +64,105 @@ namespace NorthwindApiApp.Controllers
                 return this.BadRequest();
             }
 
-            var result = await this.blogService.DestroyBlogArticleAsync(id);
+            var blogCreated = await this.blogService.DestroyBlogArticleAsync(id);
 
-            return result ? this.Ok($"BlogArticle id={id} deleted.") : this.NotFound();
+            return blogCreated ? this.Ok($"BlogArticle id={id} deleted.") : this.NotFound();
         }
 
         [HttpGet]
-        public IActionResult ReadAllBlogArticles()
+        public async Task<IActionResult> ReadAllBlogArticles()
         {
-            var result = this.blogService.GetBlogArticlesAsync().ToListAsync().Result;
+            var blogs = this.blogService.GetBlogArticlesAsync();
 
-            if (result is null)
+            if (blogs is null)
             {
                 return this.BadRequest();
             }
 
-            if (!result.Any())
+            if (!await blogs.AnyAsync())
             {
-                return this.NotFound();
+                return this.NotFound("No blogs found.");
             }
 
-            var o = from r in result
-                    select
-                    new
-                    {
-                        r.blog.ArticleId,
-                        r.blog.Title,
-                        r.blog.PublishDate,
-                        r.blog.EmployeeId,
-                        authorName = r.employee.FirstName + " " +
-                        r.employee.LastName + ", " + r.employee.Title,
-                    };
+            var responsePayload = 
+                from blog in blogs
+                let employee = this.employeeService.TryGetEmployeeAsync(blog.EmployeeId).Result.employee
+                select
+                new BlogArticleReadAllModel
+                {
+                    ArticleId = blog.ArticleId,
+                    Title = blog.Title,
+                    PostedDate = blog.PublishDate,
+                    AuthorId = blog.EmployeeId,
+                    AuthorName = employee.FirstName + " " +
+                    employee.LastName + ", " + employee.Title,
+                };
 
-
-            return this.Ok(o);
+            return this.Ok(responsePayload);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> ReadBlogArticle(int id)
         {
-            var (result, tuple) = await this.blogService.TryGetBlogArticleAsync(id);
+            var (result, blog) = await this.blogService.TryGetBlogArticleAsync(id);
 
             if (!result)
             {
                 return this.NotFound();
             }
 
-            return this.Ok(
-                new
-                {
-                    tuple.blog.ArticleId,
-                    tuple.blog.Title,
-                    tuple.blog.PublishDate,
-                    tuple.blog.EmployeeId,
-                    authorName = tuple.employee.FirstName + " " + tuple.employee.LastName + ", " + tuple.employee.Title,
-                    tuple.blog.Text,
-                });
+            var (empExists, employee) = await this.employeeService.TryGetEmployeeAsync(blog.EmployeeId);
+
+            if (!empExists)
+            {
+                return this.NotFound("No such employee.");
+            }
+
+            var readBlog = new BlogArticleReadOneModel
+            {
+                ArticleId = blog.ArticleId,
+                Title = blog.Title,
+                Posted = blog.PublishDate,
+                AuthorId = blog.EmployeeId,
+                AuthorName = employee.FirstName + " " +
+                employee.LastName,
+                Text = blog.Text,
+            };
+
+            return this.Ok(readBlog);
         }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateBlogArticle(int id, BlogArticle blog)
         {
-            return await this.blogService.UpdateBlogArticleAsync(id, blog) ? this.Ok() : this.NotFound();
+            var updated = await this.blogService.UpdateBlogArticleAsync(id, blog);
+
+            if (!updated)
+            {
+                this.NotFound("Article not found.");
+            }
+
+            var payload = new BlogArticleUpdatedModel
+            {
+                Title = blog.Title,
+                Text = blog.Text,
+            };
+
+            return this.Ok(payload);
         }
 
         [HttpGet("{articleId:int}/products")]
         public ActionResult<IAsyncEnumerable<Product>> ReadRelatedProducts(int articleId)
         {
-            var products = this.blogService.GetProductsForBlogArticleAsync(articleId);
+            var articleProducts = this.blogService.GetBlogArticleProductsAsync(articleId);
 
-            if (!products.AnyAsync().Result)
+            if (!articleProducts.AnyAsync().Result)
             {
                 return this.NotFound();
             }
+
+            var products = articleProducts.SelectAwait(async x => 
+            (await this.productService.TryGetProductAsync(x.ProductId)).product);
 
             return this.Ok(products);
         }
@@ -126,9 +170,9 @@ namespace NorthwindApiApp.Controllers
         [HttpPost("{articleId:int}/products/{productId:int}")]
         public async Task<IActionResult> PostBlogArticleProduct(int articleId, int productId)
         {
-            var id = await this.blogService.CreateBlogArticleProductAsync(articleId, productId);
+            var created = await this.blogService.CreateBlogArticleProductAsync(articleId, productId);
 
-            if (id == -1)
+            if (!created)
             {
                 return this.NotFound();
             }
