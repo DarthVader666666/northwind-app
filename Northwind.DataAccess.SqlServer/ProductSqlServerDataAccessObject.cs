@@ -23,6 +23,15 @@ namespace Northwind.DataAccess.SqlServer
             this.connection.Open();
         }
 
+        public int GetAmountOfProducts()
+        {
+            using (var command = new SqlCommand(
+                "SELECT COUNT(ProductID) FROM dbo.Products", this.connection))
+            {
+                return (int)command.ExecuteScalar();
+            };
+        }
+
         /// <inheritdoc/>
         public int InsertProduct(ProductTransferObject product)
         {

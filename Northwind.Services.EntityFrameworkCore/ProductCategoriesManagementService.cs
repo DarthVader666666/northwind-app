@@ -23,21 +23,12 @@ namespace Northwind.Services.EntityFrameworkCore
 
         public async Task<int> CreateCategoryAsync(ProductCategory productCategory)
         {
-            var id = 1;
-
-            if (this.context.Categories.AnyAsync().Result)
-            {
-                id = this.context.Categories.Max(x => x.CategoryId);
-                id++;
-            }
-
             var entity = this.toEntitymapper.Map<CategoryEntity>(productCategory);
 
-            entity.CategoryId = id;
             await this.context.Categories.AddAsync(entity);
             await this.context.SaveChangesAsync();
 
-            return id;
+            return entity.CategoryId;
         }
 
         public async Task<bool> DestroyCategoryAsync(int categoryId)
@@ -97,6 +88,11 @@ namespace Northwind.Services.EntityFrameworkCore
             await this.context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<int> GetCategoriesAmountAsync()
+        {
+            return await this.context.Categories.CountAsync();
         }
     }
 }

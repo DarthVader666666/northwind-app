@@ -25,6 +25,27 @@ namespace Northwind.DataAccess.SqlServer
             this.connection.Open();
         }
 
+        public int GetAmountOfEmployees()
+        {
+            using (var command = new SqlCommand
+            {
+                CommandType = CommandType.Text,
+                CommandText = "SELECT * FROM dbo.Employees",
+                Connection = this.connection,
+            })
+            {
+                var reader = command.ExecuteReader();
+                var count = 0;
+
+                while (reader.Read())
+                {
+                    count++;
+                }
+
+                return count;
+            }
+        }
+
         /// <inheritdoc/>
         public int InsertEmployee(EmployeeTransferObject employee)
         {

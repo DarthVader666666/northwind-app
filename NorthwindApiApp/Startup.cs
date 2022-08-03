@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace NorthwindApiApp
 {
@@ -29,13 +30,19 @@ namespace NorthwindApiApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<BloggingContext>(options => 
+            options.UseSqlServer(this.Configuration.GetConnectionString("NorthwindBlogging")));
+
+            services.AddScoped<IBloggingService, BloggingService>(serviceProvider =>
+            new BloggingService(serviceProvider.GetService<BloggingContext>()));
+
             switch (this.Configuration["DataStorage"].ToUpper())
             {
                 case "ADO_SQL":
                     {
                         services.AddScoped<NorthwindDataAccessFactory, SqlServerDataAccessFactory>(
                             serviceProvider => new SqlServerDataAccessFactory(
-                                this.Configuration["ConnectionString"]));
+                                this.Configuration.GetConnectionString("Northwind")));
 
                         services.AddScoped<IProductManagementService, ProductManagementDataAccessService>(
                             serviceProvider => new ProductManagementDataAccessService(
@@ -52,16 +59,12 @@ namespace NorthwindApiApp
                         services.AddScoped<IEmployeeManagementService, EmployeeManagementDataAccessService>(
                             serviceProvider => new EmployeeManagementDataAccessService(
                                 serviceProvider.GetService<NorthwindDataAccessFactory>()));
-
-                        services.AddScoped<IBloggingService, BloggingService>(serviceProvider =>
-                        new BloggingService(new DesignTimeBloggingContextFactory()));
-
                     }; break;
 
                 case "EF_SQL":
                     {
                         services.AddDbContext<NorthwindContext>(options =>
-                        options.UseSqlServer(this.Configuration["ConnectionString"]));
+                        options.UseSqlServer(this.Configuration.GetConnectionString("Northwind")));
 
                         services.AddScoped<IProductManagementService, ProductManagementService>(
                             serviceProvider => new ProductManagementService(
@@ -78,15 +81,12 @@ namespace NorthwindApiApp
                         services.AddScoped<IEmployeeManagementService, EmployeeManagementService>(
                             serviceProvider => new EmployeeManagementService(
                                  serviceProvider.GetService<NorthwindContext>()));
-
-                        services.AddScoped<IBloggingService, BloggingService>(serviceProvider =>
-                        new BloggingService(new DesignTimeBloggingContextFactory()));
-
                     };break;
 
                 case "IN_MEMORY":
                     {
-                        services.AddDbContext<NorthwindContext>(options => options.UseInMemoryDatabase("Northwind"));
+                        services.AddTransient<NorthwindContext>(ser => new DbContextFactory().
+                        CreateDbContext(new string[] { "IN_MEMORY" }));
 
                         services.AddScoped<IProductManagementService, ProductManagementService>(
                             serviceProvider => new ProductManagementService(serviceProvider.GetService<NorthwindContext>()));
@@ -111,6 +111,20 @@ namespace NorthwindApiApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+
+            try
+            {
+                var context = app.ApplicationServices.GetService<NorthwindContext>();
+
+                if (context.Database.IsInMemory())
+                {
+                    context.Seed(this.Configuration["PicturePath"]);
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("DB Context is scoped.");
             }
 
             app.UseRouting();

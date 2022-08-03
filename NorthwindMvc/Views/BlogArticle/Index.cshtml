@@ -1,0 +1,35 @@
+﻿@model NorthwindMvc.Models.BlogArticleModels.BlogArticleListModel
+
+<html>
+  <head>
+      <meta name="viewport" content="width=device-width" />
+      <link rel="stylesheet" href="wwwroot/lib/bootstrap/dist/css/bootstrap.css" />
+  </head>
+  <body>
+       <table class="table">
+            <thread>
+                <tr>
+                    <th>Title</th>
+                    <th>Posted date</th>
+                    <th>Author</th>
+                </tr>
+            </thread>
+            <tbody>
+            @foreach (var a in this.Model.Articles)
+            {
+                <tr>
+                    <td>@a.Title</td>
+                    <td>@a.PostedDate.ToShortDateString()</td>
+                    <td>@a.AuthorName</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+  </body>
+
+<div page-model="@Model.PagingInfo" page-action="Index" page-classes-enabled="true"
+        page-class="btn" page-class-normal="btn-outline-dark"
+        page-class-selected="btn-primary" class="btn-group pull-right m-1">
+</div>
+
+</html>

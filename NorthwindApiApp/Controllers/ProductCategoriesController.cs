@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Northwind.Services;
 using Northwind.Services.Products;
-using System;
 
 namespace NorthwindApiApp.Controllers
 {
@@ -22,6 +22,12 @@ namespace NorthwindApiApp.Controllers
         {
             this.categoryService = categoryService;
             this.pictureService = pictureService;
+        }
+
+        [HttpGet("total")]
+        public async Task<ActionResult<int>> ReadCategoriesAmount()
+        {
+            return await this.categoryService.GetCategoriesAmountAsync();
         }
 
         [HttpGet("{id:int}")]

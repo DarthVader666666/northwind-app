@@ -26,21 +26,12 @@ namespace Northwind.Services.EntityFrameworkCore
 
         public async Task<int> CreateProductAsync(Product product)
         {
-            var id = 1;
-
-            if (await this.context.Products.AnyAsync())
-            {
-                id = this.context.Products.MaxAsync(x => x.ProductId).Result;
-                id++;
-            }
-
             var entity = this.toEntitymapper.Map<ProductEntity>(product);
 
-            entity.ProductId = id;
             await this.context.Products.AddAsync(entity);
             await this.context.SaveChangesAsync();
 
-            return id;
+            return entity.ProductId;
         }
 
         public async Task<bool> DestroyProductAsync(int productId)
@@ -90,8 +81,7 @@ namespace Northwind.Services.EntityFrameworkCore
             {
                 yield return this.fromEntitymapper.Map<Product>(item);
             }
-        }
-        
+        }        
 
         public async Task<(bool result, Product product)> TryGetProductAsync(int productId)
         {
@@ -111,6 +101,11 @@ namespace Northwind.Services.EntityFrameworkCore
             await this.context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<int> GetProductsCountAsync()
+        {
+            return await this.context.Products.CountAsync();
         }
     }
 }

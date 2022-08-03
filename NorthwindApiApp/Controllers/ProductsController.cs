@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Northwind.Services;
-using Northwind.Services.Products;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Northwind.Services;
+using Northwind.Services.Products;
 
 namespace NorthwindApiApp.Controllers
 {
@@ -16,6 +16,12 @@ namespace NorthwindApiApp.Controllers
         public ProductsController(IProductManagementService service)
         {
             this.service = service;
+        }
+
+        [HttpGet("total")]
+        public async Task<ActionResult<int>> ReadAmountOfProducts()
+        {
+            return await this.service.GetProductsCountAsync();
         }
 
         [HttpGet("{id:int}")]

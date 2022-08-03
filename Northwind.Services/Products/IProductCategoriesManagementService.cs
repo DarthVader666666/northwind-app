@@ -4,6 +4,8 @@ namespace Northwind.Services
 {
     public interface IProductCategoriesManagementService
     {
+        Task<int> GetCategoriesAmountAsync();
+
         /// <summary>
         /// Shows a list of product categories using specified offset and limit for pagination.
         /// </summary>

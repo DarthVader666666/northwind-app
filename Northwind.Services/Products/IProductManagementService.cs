@@ -8,6 +8,12 @@ namespace Northwind.Services
     public interface IProductManagementService
     {
         /// <summary>
+        /// Shows an amount of products.
+        /// </summary>
+        /// <returns>count of imployees int.</returns>
+        Task<int> GetProductsCountAsync();
+
+        /// <summary>
         /// Shows a list of products using specified offset and limit for pagination.
         /// </summary>
         /// <param name="offset">An offset of the first element to return.</param>

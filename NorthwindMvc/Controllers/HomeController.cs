@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Northwind.Services.Employees;
 using NorthwindMvc.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace NorthwindMvc.Controllers
@@ -15,10 +18,10 @@ namespace NorthwindMvc.Controllers
 
         public HomeController(ILogger<HomeController> logger)
         {
-            _logger = logger;
+            this._logger = logger;
         }
 
-        public IActionResult Index()
+        public async  Task<IActionResult> Index()
         {
             return View();
         }
@@ -33,5 +36,5 @@ namespace NorthwindMvc.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-    }
+    }    
 }

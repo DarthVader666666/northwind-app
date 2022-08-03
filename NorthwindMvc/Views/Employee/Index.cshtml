@@ -1,0 +1,41 @@
+﻿@model NorthwindMvc.Models.EmployeeModels.EmployeesListModel
+
+<html>
+  <head>
+      <meta name="viewport" content="width=device-width" />
+      <link rel="stylesheet" href="wwwroot/lib/bootstrap/dist/css/bootstrap.css" />
+  </head>
+  <body>
+       <div class="col-16 text-right">
+            <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">Create new Employee</a>
+       </div>
+       <table class="table">
+            <thread>
+                <tr>
+                    <th>Full name</th>
+                    <th>Title</th>
+                    <th>Photo</th>
+                </tr>
+            </thread>
+            <tbody>
+            @foreach (var e in this.Model.Employees)
+            {
+                <tr>
+                    <td>@e.FirstName @e.LastName</td>
+                    <td>@e.Title</td>
+                    <td>
+                        <img alt="" src="data:image/bmp;base64,@Convert.ToBase64String(e.Photo)" style="height:60px;width:60px;"/>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+  </body>
+
+<div page-model="@Model.PagingInfo" 
+    page-action="Index" page-classes-enabled="true"
+        page-class="btn" page-class-normal="btn-outline-dark"
+        page-class-selected="btn-primary" class="btn-group pull-right m-1">
+</div>
+
+</html>

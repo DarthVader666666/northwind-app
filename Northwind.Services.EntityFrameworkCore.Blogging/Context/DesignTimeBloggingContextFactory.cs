@@ -13,11 +13,11 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Context
 
             var configuration = new ConfigurationBuilder().AddEnvironmentVariables().Build();
             var connectionString = configuration.GetConnectionString(connectionStringName);
-            //Environment.GetEnvironmentVariable(connectioStringPrefix + connectionStringName); //configuration.GetConnectionString(connectioStringPrefix + connectionStringName);
 
             if (string.IsNullOrEmpty(connectionString))
             {
-                throw new Exception($"{connectioStringPrefix}{connectionStringName} environment variable is not set.");
+                connectionString = args[0];
+                Console.WriteLine($"{connectioStringPrefix}{connectionStringName} environment variable is not set. Using args.");
             }
 
             Console.WriteLine($"Using {connectioStringPrefix}{connectionStringName} environment variable as a connection string.");

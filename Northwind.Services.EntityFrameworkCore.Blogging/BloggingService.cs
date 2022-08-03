@@ -8,9 +8,9 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
     {
         private readonly BloggingContext context;
 
-        public BloggingService(DesignTimeBloggingContextFactory blogFactory)
+        public BloggingService(BloggingContext context)
         {
-            this.context = blogFactory.CreateDbContext(null);
+            this.context = context ?? throw new ArgumentNullException();
         }
 
         public async Task<int> CreateBlogArticleAsync(BlogArticle blogArticle)

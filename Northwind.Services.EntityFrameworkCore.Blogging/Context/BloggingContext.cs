@@ -12,6 +12,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Context
         public BloggingContext(DbContextOptions<BloggingContext> options)
             : base(options)
         {
+            this.Database.EnsureCreated();
         }
 
         public virtual DbSet<BlogArticle> BlogArticles { get; set; }

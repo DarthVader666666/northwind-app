@@ -1,37 +1,31 @@
 ﻿using Northwind.Services.Products;
 using Northwind.Services.Employees;
 using Bogus;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using AutoMapper;
 using Northwind.Services.EntityFrameworkCore.Entities;
+using Northwind.Services.EntityFrameworkCore.Context;
 
 namespace Northwind.Services.EntityFrameworkCore
 {
-    public static class ModelBuilderExtensions
+    public static class DataSeeder
     {
         private const int NumberOfCategories = 10;
         private const int NumberOfProducts = 30;
         private const int NumberOfEmployees = 15;
 
-        private static readonly string directory = Directory.GetParent(Directory.GetCurrentDirectory()).
-            ToString() + "\\Northwind.Services.EntityFrameworkCore\\";
-        private static IConfiguration configuration = new ConfigurationBuilder().
-            SetBasePath(directory).AddJsonFile("appsettings.json").Build();
-
         private static readonly IMapper toProductEntityMapper = new Mapper(new MapperConfiguration(conf =>
-            conf.CreateMap<Product, ProductEntity> ()));
+            conf.CreateMap<Product, ProductEntity>()));
         private static readonly IMapper toCategoryEntityMapper = new Mapper(new MapperConfiguration(conf =>
             conf.CreateMap<ProductCategory, CategoryEntity>()));
         private static readonly IMapper toEmployeeEntityMapper = new Mapper(new MapperConfiguration(conf =>
             conf.CreateMap<Employee, EmployeeEntity>()));
 
-
-        public static void Seed(this ModelBuilder modelBuilder)
+        public static void Seed(this NorthwindContext context, string picturePath)
         {
-            modelBuilder.Entity<ProductEntity>().HasData(GenerateProducts());
-            modelBuilder.Entity<CategoryEntity>().HasData(GenerateCategories());
-            modelBuilder.Entity<EmployeeEntity>().HasData(GenerateEmployees());
+            context.Products.AddRange(GenerateProducts());
+            context.Categories.AddRange(GenerateCategories(picturePath));
+            context.Employees.AddRange(GenerateEmployees(picturePath));
+            context.SaveChanges();
         }
 
         private static IEnumerable<ProductEntity> GenerateProducts()
@@ -60,10 +54,10 @@ namespace Northwind.Services.EntityFrameworkCore
             }
         }
 
-        private static IEnumerable<CategoryEntity> GenerateCategories()
+        private static IEnumerable<CategoryEntity> GenerateCategories(string picturePath)
         {
             int id = 1;
-            var directoryInfo = new DirectoryInfo(configuration["picturePath"]);
+            var directoryInfo = new DirectoryInfo(picturePath);
             var files = directoryInfo.GetFiles();
 
             foreach (var item in GenerateCategoriesCore())
@@ -92,13 +86,26 @@ namespace Northwind.Services.EntityFrameworkCore
             }
         }
 
-        private static IEnumerable<EmployeeEntity> GenerateEmployees()
+        private static IEnumerable<EmployeeEntity> GenerateEmployees(string picturePath)
         {
             int id = 1;
+            var directoryInfo = new DirectoryInfo(picturePath);
+            var files = directoryInfo.GetFiles();
 
             foreach (var item in GenerateEmployeesCore())
             {
+                var name = Array.Find(files, x => x.Name.Split('.')[0] == $"e{id}");
+
+                if (name is not null)
+                {
+                    using var stream = new FileStream(name.FullName, FileMode.Open, FileAccess.Read);
+                    using var memoryStream = new MemoryStream();
+                    Task.Run(async () => await stream?.CopyToAsync(memoryStream)).Wait();
+                    item.Photo = memoryStream?.ToArray();
+                }
+
                 item.EmployeeId = id++;
+
                 yield return toEmployeeEntityMapper.Map<EmployeeEntity>(item);
             }
 

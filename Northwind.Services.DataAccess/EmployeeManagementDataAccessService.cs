@@ -40,6 +40,13 @@ namespace Northwind.Services.DataAccess
             }
         }
 
+        public Task<int> GetEmployeesCountAsync()
+        {
+            return Task.Run(() =>
+                this.employeeService.GetAmountOfEmployees()
+            );            
+        }
+
         public async IAsyncEnumerable<Employee> LookupEmployeesByLastNameAsync(ICollection<string> names)
         {
             await foreach (var item in this.employeeService.SelectEmployeesByLastName(names))

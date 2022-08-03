@@ -26,21 +26,12 @@ namespace Northwind.Services.EntityFrameworkCore
 
         public async Task<int> CreateEmployeeAsync(Employee employee)
         {
-            var id = 1;
-
-            if (this.context.Employees.AnyAsync().Result)
-            {
-                id = this.context.Employees.Max(x => x.EmployeeId);
-                id++;
-            }
-
             var entity = this.toEntitymapper.Map<EmployeeEntity>(employee);
 
-            entity.EmployeeId = id;
             await this.context.Employees.AddAsync(entity);
             await this.context.SaveChangesAsync();
 
-            return id;
+            return entity.EmployeeId;
         }
 
         public async Task<bool> DestroyEmployeeAsync(int employeeId)
@@ -69,7 +60,7 @@ namespace Northwind.Services.EntityFrameworkCore
 
         public async IAsyncEnumerable<Employee> GetEmployeesAsync(int offset, int limit)
         {
-            var employees = this.context.Employees.Skip(offset).Take(limit).AsAsyncEnumerable();
+            var employees = this.context.Employees.OrderBy(x => x.EmployeeId).Skip(offset).Take(limit).AsAsyncEnumerable();
 
             await foreach (var item in employees)
             {
@@ -95,6 +86,11 @@ namespace Northwind.Services.EntityFrameworkCore
             await this.context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<int> GetEmployeesCountAsync()
+        {
+            return await this.context.Employees.CountAsync();
         }
     }
 }

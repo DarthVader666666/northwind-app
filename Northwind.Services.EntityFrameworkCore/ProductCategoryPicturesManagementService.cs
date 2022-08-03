@@ -28,8 +28,7 @@ namespace Northwind.Services.EntityFrameworkCore
 
         public async Task<(bool, byte[])> TryGetPictureAsync(int categoryId)
         {
-            var category = await Task.Run(async () =>
-            await this.context.Categories.FindAsync(categoryId));
+            var category = await this.context.Categories.FindAsync(categoryId);
 
             return (category.Picture is not null, category.Picture);
         }

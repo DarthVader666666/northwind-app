@@ -17,6 +17,7 @@ namespace Northwind.Services.DataAccess
             conf.CreateMap<ProductCategoryTransferObject, ProductCategory>()));
         }
 
+
         public Task<int> CreateCategoryAsync(ProductCategory productCategory)
         {
             var mapper = new Mapper(new MapperConfiguration(conf =>
@@ -70,6 +71,12 @@ namespace Northwind.Services.DataAccess
 
                 return this.categoryService.UpdateProductCategory(category);
             });
+        }
+
+        public async Task<int> GetCategoriesAmountAsync()
+        {
+            return await Task.Run(() =>
+            this.categoryService.GetCategoriesAmount());
         }
     }
 }

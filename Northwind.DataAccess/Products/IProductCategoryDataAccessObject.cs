@@ -7,6 +7,8 @@ namespace Northwind.DataAccess.Products
     /// </summary>
     public interface IProductCategoryDataAccessObject
     {
+        int GetCategoriesAmount();
+
         /// <summary>
         /// Inserts a new Northwind product category to a data storage.
         /// </summary>

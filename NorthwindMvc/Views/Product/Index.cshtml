@@ -1,0 +1,40 @@
+﻿@model NorthwindMvc.Models.ProductModels.ProductListModel
+
+<html>
+  <head>
+      <meta name="viewport" content="width=device-width" />
+      <link rel="stylesheet" href="wwwroot/lib/bootstrap/dist/css/bootstrap.css" />
+  </head>
+  <body>
+       <div class="col-16 text-right">
+            <a asp-controller="Product" asp-action="Create" class="btn btn-primary">Create new Product</a>
+       </div>
+       <table class="table">
+            <thread>
+                <tr>
+                    <th>Product name</th>
+                    <th>Quantity per unit</th>
+                    <th>Unit price</th>
+                    <th>Units in stock</th>
+                </tr>
+            </thread>
+            <tbody>
+            @foreach (var p in this.Model.Products)
+            {
+                <tr>
+                    <td>@p.ProductName</td>
+                    <td>@p.QuantityPerUnit</td>
+                    <td>@p.UnitPrice</td>
+                    <td>@p.UnitsInStock</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+  </body>
+
+<div page-model="@Model.PagingInfo" page-action="Index" page-classes-enabled="true"
+        page-class="btn" page-class-normal="btn-outline-dark"
+        page-class-selected="btn-primary" class="btn-group pull-right m-1">
+</div>
+
+</html>

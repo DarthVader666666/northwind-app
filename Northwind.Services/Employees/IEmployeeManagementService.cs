@@ -6,6 +6,12 @@
     public interface IEmployeeManagementService
     {
         /// <summary>
+        /// Shows an amount of employees.
+        /// </summary>
+        /// <returns>count of imployees int.</returns>
+        Task<int> GetEmployeesCountAsync();
+
+        /// <summary>
         /// Shows a list of products using specified offset and limit for pagination.
         /// </summary>
         /// <param name="offset">An offset of the first element to return.</param>

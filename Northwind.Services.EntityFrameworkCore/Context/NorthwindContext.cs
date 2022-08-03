@@ -45,10 +45,6 @@ namespace Northwind.Services.EntityFrameworkCore.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //if (optionsBuilder.IsConfigured)
-            //{
-            //    optionsBuilder.UseInMemoryDatabase("Northwind");
-            //}            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -308,15 +304,15 @@ namespace Northwind.Services.EntityFrameworkCore.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Territories_Region");
 
-                if (this.Database.IsInMemory())
-                {
-                    modelBuilder.Seed();
-                }
+                //if (this.Database.IsInMemory())
+                //{
+                //    modelBuilder.Seed();
+                //}
             });
 
-            OnModelCreatingPartial(modelBuilder);
+            //OnModelCreatingPartial(modelBuilder);
         }
 
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

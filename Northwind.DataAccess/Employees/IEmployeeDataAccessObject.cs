@@ -7,6 +7,8 @@ namespace Northwind.DataAccess.Employees
     /// </summary>
     public interface IEmployeeDataAccessObject
     {
+        int GetAmountOfEmployees();
+
         /// <summary>
         /// Inserts a new Northwind employee to a data storage.
         /// </summary>

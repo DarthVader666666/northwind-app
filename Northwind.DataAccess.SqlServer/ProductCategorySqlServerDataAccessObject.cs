@@ -25,6 +25,15 @@ namespace Northwind.DataAccess.SqlServer
             this.connection.Open();
         }
 
+        public int GetCategoriesAmount()
+        {
+            using (var command = new SqlCommand(
+                "SELECT COUNT(CategoryID) FROM dbo.Categories", this.connection))
+            {
+                return (int)command.ExecuteScalar();
+            };
+        }
+
         /// <inheritdoc/>
         public int InsertProductCategory(ProductCategoryTransferObject productCategory)
         {

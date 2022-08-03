@@ -77,5 +77,10 @@ namespace Northwind.Services.DataAccess
                 return this.productService.UpdateProduct(productTO);
             });
         }
+
+        public Task<int> GetProductsCountAsync()
+        {
+            return Task.Run(() => this.productService.GetAmountOfProducts());
+        }
     }
 }
