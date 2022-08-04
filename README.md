@@ -1,3 +1,6 @@
+# NorthwindApiApp - server
+# NorthwindMvc - client
+
 # Northwind Applications
 
 ## Модуль 5. Использование Entity Framework Core
