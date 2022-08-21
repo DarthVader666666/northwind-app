@@ -1,0 +1,94 @@
+﻿@model NorthwindMvc.Models.EmployeeModels.EmployeeModel
+
+<form asp-action="Update" method="post" enctype="multipart/form-data">
+    <input asp-for="EmployeeId" hidden/>
+    <input asp-for="PhotoStringValue" hidden/>
+    <div class="border p-3">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="from-group row">
+            <h2 class="text-black-50 pl-3">Update Employee</h2>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div>
+                    <img alt="" src="data:image/bmp;base64,@Convert.ToBase64String(Model.Photo)" style="height:100px;width:100px;"/>
+                </div>
+                <div class="form-group row">
+                    <div class="col-6 text-right">
+                        <label asp-for="FirstName"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="FirstName" class="form-control"/>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <label asp-for="LastName"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="LastName" class="form-control"/>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <label asp-for="Title"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="Title" class="form-control"/>
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <label asp-for="Address"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="Address" class="form-control"/>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <label asp-for="HomePhone"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="HomePhone" class="form-control"/>
+                        <span asp-validation-for="HomePhone" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <label asp-for="BirthDate"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="BirthDate" class="form-control"/>
+                        <span asp-validation-for="BirthDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <label asp-for="HireDate"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="HireDate" class="form-control"/>
+                        <span asp-validation-for="HireDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <label asp-for="PictureForm">Choose Photo:</label>
+                    </div>
+                    <div class="col-6 form-group" enctype="multipart/form-data">
+                        <input asp-for="PictureForm" class="form-control">
+                        <span asp-validation-for="PictureForm"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 offset-2 row">
+                        <div class="col">
+                            <input type="submit" class="btn btn-info w-75" value="Update"/>
+                         </div>
+                         <div class="col">
+                            <a asp-action="Index" class="btn btn-danger w-75">Back</a>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    @{
+    <partial name="_ValidationScriptsPartial"/>
+    }
+}

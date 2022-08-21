@@ -50,11 +50,18 @@ namespace Northwind.Services.EntityFrameworkCore
 
         public async IAsyncEnumerable<Employee> LookupEmployeesByLastNameAsync(ICollection<string> names)
         {
-            var employees = this.context.Employees.Where(e => names.Any(n => n == e.LastName)).AsAsyncEnumerable();
+            var employees = this.context.Employees.AsAsyncEnumerable();
 
-            await foreach(var item in employees)
+            await foreach (var e in employees)
             {
-                yield return this.fromEntitymapper.Map<Employee>(item);
+                if (names.Any(x =>
+                {
+                    if (x is null) return false;
+                    return (e.FirstName + e.LastName).Contains(x, StringComparison.OrdinalIgnoreCase);
+                }))
+                {
+                    yield return this.fromEntitymapper.Map<Employee>(e);
+                }
             }
         }
 

@@ -37,7 +37,7 @@ namespace NorthwindApiApp.Controllers
                 return this.BadRequest();
             }
 
-            var employeeExists = this.employeeService.TryGetEmployeeAsync(blogArticle.EmployeeId).Result.result;
+            var employeeExists = this.employeeService.TryGetEmployeeAsync((int)blogArticle.EmployeeId).Result.result;
 
             if (!employeeExists)
             {
@@ -86,7 +86,7 @@ namespace NorthwindApiApp.Controllers
 
             var responsePayload = 
                 from blog in blogs
-                let employee = this.employeeService.TryGetEmployeeAsync(blog.EmployeeId).Result.employee
+                let employee = this.employeeService.TryGetEmployeeAsync((int)blog.EmployeeId).Result.employee
                 select
                 new BlogArticleReadAllModel
                 {
@@ -111,7 +111,7 @@ namespace NorthwindApiApp.Controllers
                 return this.NotFound();
             }
 
-            var (empExists, employee) = await this.employeeService.TryGetEmployeeAsync(blog.EmployeeId);
+            var (empExists, employee) = await this.employeeService.TryGetEmployeeAsync((int)blog.EmployeeId);
 
             if (!empExists)
             {
@@ -125,7 +125,7 @@ namespace NorthwindApiApp.Controllers
                 Posted = blog.PublishDate,
                 AuthorId = blog.EmployeeId,
                 AuthorName = employee.FirstName + " " +
-                employee.LastName,
+                employee.LastName + ", " + employee.Title,
                 Text = blog.Text,
             };
 
@@ -146,6 +146,7 @@ namespace NorthwindApiApp.Controllers
             {
                 Title = blog.Title,
                 Text = blog.Text,
+                AuthorId = blog.EmployeeId
             };
 
             return this.Ok(payload);

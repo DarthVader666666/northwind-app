@@ -1,0 +1,43 @@
+﻿@model IEnumerable<NorthwindMvc.Models.EmployeeModels.EmployeeModel>
+
+<html>
+  <head>
+      <meta name="viewport" content="width=device-width" />
+      <link rel="stylesheet" href="wwwroot/lib/bootstrap/dist/css/bootstrap.css" />
+  </head>
+  <body>
+      <h2>Search results:</h2>
+              <table class="table table-bordered table-striped">
+                  <thread>
+                      <tr>
+                          <th>Full name</th>
+                          <th>Title</th>
+                          <th>Photo</th>
+                          <th>
+                              <div class="col text-center">
+                                  <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">Add new Employee</a>
+                              </div>
+                          </th>
+                      </tr>
+                  </thread>
+                  <tbody>
+                      @foreach (var e in this.Model)
+                      {
+                          <tr>
+                              <td>@e.FirstName @e.LastName</td>
+                              <td>@e.Title</td>
+                              <td>
+                                  <img alt="" src="data:image/bmp;base64,@Convert.ToBase64String(e.Photo)" style="height:60px;width:60px;"/>
+                              </td>
+                              <td>
+                                  <div class="w-100 btn-group" role="group">
+                                      <a asp-controller="Employee" asp-action="Update" asp-route-id="@e.EmployeeId" class="btn btn-primary mx-1">Update</a>
+                                      <a asp-controller="Employee" asp-action="Delete" asp-route-id="@e.EmployeeId" class="btn btn-danger mx-1">Delete</a>
+                                  </div>
+                              </td>
+                          </tr>
+                      }
+                  </tbody>
+              </table>
+</body>
+</html>

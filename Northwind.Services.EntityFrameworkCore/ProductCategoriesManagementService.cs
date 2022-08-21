@@ -40,29 +40,39 @@ namespace Northwind.Services.EntityFrameworkCore
                 return false;
             }
 
-            this.context.Categories.Remove(category);
-            await this.context.SaveChangesAsync();
+            try
+            {
+                this.context.Categories.Remove(category);
+                await this.context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
+
             return true;
         }
 
         public async IAsyncEnumerable<ProductCategory> LookupCategoriesByNameAsync(ICollection<string> names)
         {
-            var categories = this.context.Categories.Where(c => names.Any(n => n == c.CategoryName)).AsAsyncEnumerable();
+            var categories = this.context.Categories.AsAsyncEnumerable();
 
-            //if (!categories.Any())
-            //{
-            //    return null;
-            //}
-
-            await foreach (var item in categories)
+            await foreach (var c in categories)
             {
-                yield return this.fromEntitymapper.Map<ProductCategory>(item);
+                if (names.Any(x =>
+                {
+                    if (x is null) return false;
+                    return c.CategoryName.Contains(x, StringComparison.OrdinalIgnoreCase);
+                }))
+                {
+                    yield return this.fromEntitymapper.Map<ProductCategory>(c);
+                }
             }
         }
 
         public async IAsyncEnumerable<ProductCategory> GetCategoriesAsync(int offset, int limit)
         {
-            var categories = this.context.Categories.Skip(offset).Take(limit).AsAsyncEnumerable();
+            var categories = this.context.Categories.OrderBy(x => x.CategoryId).Skip(offset).Take(limit).AsAsyncEnumerable();
 
             await foreach (var item in categories)
             {

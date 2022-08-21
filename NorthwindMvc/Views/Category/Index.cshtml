@@ -7,15 +7,28 @@
       <link rel="stylesheet" href="wwwroot/lib/bootstrap/dist/css/bootstrap.css" />
   </head>
   <body>
-       <div class="col-16 text-right">
-            <a asp-controller="Category" asp-action="Create" class="btn btn-primary">Create new Category</a>
+       <div>
+          <form asp-action="FindByName" asp-controller="Category" method="get">
+              <label>Search category:</label>
+              <input asp-for="PagingInfo.Name"/> 
+              <input type="submit" class="btn btn-primary" value="Search"/>
+          </form>
+
+          <form asp-action="Index" asp-controller="Product" asp-route-name="@Model.PagingInfo.Name" hidden></form>
+
        </div>
-       <table class="table">
+
+       <table class="table table-bordered table-striped">
             <thread>
                 <tr>
                     <th>Category name</th>
                     <th>Description</th>
                     <th>Photo</th>
+                    <th>
+                        <div class="col text-center">
+                            <a asp-controller="Category" asp-action="Create" class="btn btn-primary">Create new Category</a>
+                        </div>
+                    </th>
                 </tr>
             </thread>
             <tbody>
@@ -26,6 +39,12 @@
                     <td>@c.Description</td>
                     <td>
                         <img alt="" src="data:image/bmp;base64,@Convert.ToBase64String(c.Picture)" style="height:60px;width:60px;"/>
+                    </td>
+                    <td>
+                        <div class="w-100 btn-group" role="group">
+                            <a asp-controller="Category" asp-action="Update" asp-route-id="@c.CategoryId" class="btn btn-primary mx-1">Update</a>
+                            <a asp-controller="Category" asp-action="Delete" asp-route-id="@c.CategoryId" class="btn btn-danger mx-1">Delete</a>
+                        </div>                        
                     </td>
                 </tr>
             }

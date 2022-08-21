@@ -1,0 +1,79 @@
+﻿@model NorthwindMvc.Models.ProductModels.ProductCreateModel
+
+<form method="post" asp-action="Update">
+    <input asp-for="Product.ProductId" value="@Model.Product.ProductId" hidden/>
+    <div class="border p-3">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="from-group row">
+            <h2 class="text-black-50 pl-3">Update Product</h2>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <div class="col-6 text-right">
+                        <label asp-for="@Model.Product.ProductName"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="@Model.Product.ProductName" value="@Model.Product.ProductName" class="form-control"/>
+                        <span asp-validation-for="@Model.Product.ProductName" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <label asp-for="@Model.Product.QuantityPerUnit"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="@Model.Product.QuantityPerUnit" value="@Model.Product.QuantityPerUnit" class="form-control"/>
+                        <span asp-validation-for="@Model.Product.QuantityPerUnit" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <label asp-for="@Model.Product.UnitPrice"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="@Model.Product.UnitPrice" class="form-control"/>
+                        <span asp-validation-for="@Model.Product.UnitPrice" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <label asp-for="@Model.Product.UnitsInStock"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="@Model.Product.UnitsInStock" class="form-control" value="@Model.Product.UnitsInStock"/>
+                        <span asp-validation-for="@Model.Product.UnitsInStock" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-6 text-right">
+                        <label>Category</label>
+                    </div>
+                    <div class="col-6">
+                        <select asp-for="@Model.Product.CategoryId" class="form-control">
+                            @if (Model.Product.CategoryId is not null)
+                            {
+                                <option value="@Model.Categories.First(x => x.CategoryId == Model.Product.CategoryId).CategoryName"></option>
+                            }
+                            @foreach(var item in Model.Categories)
+                            {
+                                <option value="@item.CategoryId">@item.CategoryName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="@Model.Product.CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 offset-2 row">
+                        <div class="col">
+                            <input type="submit" class="btn btn-info w-75" value="Update"/>
+                         </div>
+                         <div class="col">
+                            <a asp-action="Index" class="btn btn-danger w-75">Back</a>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@*@section Scripts
+{
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+}*@

@@ -19,8 +19,9 @@ namespace NorthwindMvc
             this.CreateMap<ProductCategory, CategoryModel>();
 
             this.CreateMap<ProductModel, Product>();
-            this.CreateMap<CategoryModel, ProductCategory>();
             this.CreateMap<EmployeeModel, Employee>();
+            this.CreateMap<BlogArticleModel, BlogArticle>();
+            this.CreateMap<CategoryModel, ProductCategory>();
         }
     }
 }

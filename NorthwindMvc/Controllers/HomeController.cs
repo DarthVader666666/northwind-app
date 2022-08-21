@@ -21,7 +21,7 @@ namespace NorthwindMvc.Controllers
             this._logger = logger;
         }
 
-        public async  Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }

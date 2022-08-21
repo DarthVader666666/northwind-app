@@ -35,7 +35,7 @@ namespace Northwind.Services.Employees
 
         public string? Extension { get; set; }
 
-        public byte[]? Photo { get; set; }
+        public byte[] Photo { get; set; }
 
         public string? Notes { get; set; }
 

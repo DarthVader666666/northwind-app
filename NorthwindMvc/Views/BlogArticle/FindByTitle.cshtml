@@ -1,0 +1,48 @@
+﻿@model IEnumerable<NorthwindMvc.Models.BlogArticleModels.BlogArticleModel>
+
+<html>
+  <head>
+      <meta name="viewport" content="width=device-width" />
+      <link rel="stylesheet" href="wwwroot/lib/bootstrap/dist/css/bootstrap.css" />
+  </head>
+  <body>
+      <h2>Search results:</h2>
+                    <table class="table table-bordered table-striped">
+                  <thread>
+                      <tr>
+                          <th>Title</th>
+                          <th>Posted date</th>
+                          <th>Author</th>
+                          <th>Product Links</th>
+                          <th>
+                              <div class="col text-center">
+                                  <a asp-controller="BlogArticle" asp-action="Create" class="btn btn-primary">Create new Article</a>
+                              </div>
+                          </th>
+                      </tr>
+                  </thread>
+              <tbody>
+                  @if (this.Model is not null)
+                  {
+                      @foreach (var a in this.Model)
+                      {
+                          <tr>
+                              <td>@a.Title</td>
+                              <td>@a.PostedDate.ToShortDateString()</td>
+                              <td>@a.AuthorName</td>
+                              <td>
+                                  <a asp-controller="BlogArticle" asp-action="AddProductLink" asp-route-id="@a.ArticleId" class="btn btn-primary mx-1">Edit Product Links</a>
+                              </td>
+                              <td>
+                                  <div class="w-100 btn-group" role="group">
+                                      <a asp-controller="BlogArticle" asp-action="Update" asp-route-id="@a.ArticleId" class="btn btn-primary mx-1">Update</a>
+                                      <a asp-controller="BlogArticle" asp-action="Delete" asp-route-id="@a.ArticleId" class="btn btn-danger mx-1">Delete</a>
+                                  </div>
+                              </td>
+                          </tr>
+                      }
+                  }
+              </tbody>
+              </table>
+  </body>
+</html>

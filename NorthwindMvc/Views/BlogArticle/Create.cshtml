@@ -1,0 +1,64 @@
+﻿@model NorthwindMvc.Models.BlogArticleModels.BlogArticleCreateModel
+
+<form method="post" asp-action="CreatePost">
+    <div class="border p-3">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="from-group row">
+            <h2 class="text-black-50 pl-3">Add Article</h2>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <div class="col-6 text-right">
+                        <label>Author</label>
+                    </div>
+                    <div class="col-6">
+                        <select asp-for="@Model.BlogArticle.EmployeeId" class="form-control">
+                            <option></option>
+
+                            @foreach(var item in Model.Authors)
+                            {
+                                <option value="@item.EmployeeId">@item.FirstName @item.LastName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="@Model.BlogArticle.EmployeeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-6 text-right">
+                        <label asp-for="@Model.BlogArticle.Title"></label>
+                    </div>
+                    <div class="col-6">
+                        <input asp-for="@Model.BlogArticle.Title" class="form-control"/>
+                        <span asp-validation-for="@Model.BlogArticle.Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-6 text-right">
+                        <label asp-for="@Model.BlogArticle.Text"></label>
+                    </div>
+                    <div class="col-6">
+                        <textarea asp-for="@Model.BlogArticle.Text" style="width:600px;height:400px" class="form-control">
+                        </textarea>
+                        <span asp-validation-for="@Model.BlogArticle.Text" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 offset-2 row">
+                        <div class="col">
+                            <input type="submit" class="btn btn-info w-75" value="Create"/>
+                         </div>
+                         <div class="col">
+                             <a asp-action="Index" class="btn btn-danger w-75">Back</a>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+}

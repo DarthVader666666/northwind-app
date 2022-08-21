@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Northwind.Services.Blogging
@@ -12,16 +11,16 @@ namespace Northwind.Services.Blogging
 
         [Column("title")]
         [StringLength(40)]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [Column("text")]
-        [StringLength(255)]
-        public string Text { get; set; }
+        [StringLength(4000)]
+        public string? Text { get; set; }
 
         [Column("publish_date")]
-        public DateTime PublishDate { get; set; }
+        public DateTime? PublishDate { get; set; }
 
         [Column("employee_id")]
-        public int EmployeeId { get; set; }
+        public int? EmployeeId { get; set; }
     }
 }

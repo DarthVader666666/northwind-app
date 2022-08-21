@@ -6,25 +6,53 @@
       <link rel="stylesheet" href="wwwroot/lib/bootstrap/dist/css/bootstrap.css" />
   </head>
   <body>
-       <table class="table">
-            <thread>
-                <tr>
-                    <th>Title</th>
-                    <th>Posted date</th>
-                    <th>Author</th>
-                </tr>
-            </thread>
-            <tbody>
-            @foreach (var a in this.Model.Articles)
+      <div>
+          <form asp-action="FindByTitle" asp-controller="BlogArticle" method="get">
+              <label>Search article:</label>
+              <input asp-for="PagingInfo.Name"/>
+              <input type="submit" class="btn btn-primary" value="Search"/>
+          </form>
+
+          <form asp-action="Index" asp-controller="BlogArticle" asp-route-name=@(Model.PagingInfo is not null ? Model.PagingInfo.Name : string.Empty) hidden></form>
+      </div>
+      
+      <table class="table table-bordered table-striped">
+          <thread>
+              <tr>
+                  <th>Title</th>
+                  <th>Posted date</th>
+                  <th>Author</th>
+                  <th>Product Links</th>
+                  <th>
+                      <div class="col text-center">
+                          <a asp-controller="BlogArticle" asp-action="Create" class="btn btn-primary">Create new Article</a>
+                      </div>
+                  </th>
+              </tr>
+          </thread>
+          <tbody>
+            @if (this.Model.Articles is not null)
             {
-                <tr>
-                    <td>@a.Title</td>
-                    <td>@a.PostedDate.ToShortDateString()</td>
-                    <td>@a.AuthorName</td>
-                </tr>
+                @foreach (var a in this.Model.Articles)
+                {
+                  <tr>
+                      <td>@a.Title</td>
+                      <td>@a.PostedDate.ToShortDateString()</td>
+                      <td>@a.AuthorName</td>
+                      <td>
+                          <a asp-controller="BlogArticle" asp-action="AddProductLink" asp-route-id="@a.ArticleId" class="btn btn-primary mx-1">Edit Product Links</a>
+                      </td>
+                      <td>
+                          <div class="w-100 btn-group" role="group">
+                              <a asp-controller="BlogArticle" asp-action="Update" asp-route-id="@a.ArticleId" class="btn btn-primary mx-1">Update</a>
+                              <a asp-controller="BlogArticle" asp-action="Delete" asp-route-id="@a.ArticleId" class="btn btn-danger mx-1">Delete</a>
+                          </div>
+                      </td>
+                  </tr>
+                }
             }
-            </tbody>
-        </table>
+          </tbody>
+      </table>  
   </body>
 
 <div page-model="@Model.PagingInfo" page-action="Index" page-classes-enabled="true"

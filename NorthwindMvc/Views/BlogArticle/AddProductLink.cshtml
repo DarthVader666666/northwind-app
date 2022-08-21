@@ -1,0 +1,28 @@
+﻿@model NorthwindMvc.Models.BlogArticleModels.ProductLinksModel
+
+<form method="post" asp-action="AddProductLinkPost">
+    <input asp-for=@this.Model.ArticleId value=@this.Model.ArticleId hidden/>
+    <table>
+    @for(int i = 0; i < this.Model.Products.Count; i++)
+    {
+        <input asp-for=@this.Model.Products[i].ProductId value=@this.Model.Products[i].ProductId hidden/>
+        <tr>
+            <td>
+                <input asp-for="Products[i].IsSelected" type="checkbox"/>
+                @this.Model.Products[i].ProductName
+            </td>
+        </tr>  
+    }
+    </table>
+    
+    <div class="form-group row">
+        <div class="col-8 offset-2 row">
+            <div class="col">
+                <input type="submit" class="btn btn-info w-75" value="OK"/>
+            </div>
+            <div class="col">
+                <a asp-action="Index" class="btn btn-danger w-75">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>

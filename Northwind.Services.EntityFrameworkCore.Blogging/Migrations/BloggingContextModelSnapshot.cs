@@ -27,22 +27,20 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                         .HasColumnName("article_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("EmployeeId")
+                    b.Property<int?>("EmployeeId")
                         .HasColumnType("int")
                         .HasColumnName("employee_id");
 
-                    b.Property<DateTime>("PublishDate")
+                    b.Property<DateTime?>("PublishDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("publish_date");
 
                     b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)")
                         .HasColumnName("text");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)")
                         .HasColumnName("title");

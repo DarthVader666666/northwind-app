@@ -63,6 +63,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
                 blog.Title = blogArticle.Title;
                 blog.Text = blogArticle.Text;
                 blog.PublishDate = DateTime.Now;
+                blog.EmployeeId = blogArticle.EmployeeId;
                 await this.context.SaveChangesAsync();
 
                 return true;
@@ -90,21 +91,25 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
 
             try
             {
-                await this.context.BlogArticleProducts.AddAsync(articleProduct);
-                await this.context.SaveChangesAsync();
+                if (!this.ProductLinkExists(blogArticleId, productId))
+                {
+                    await this.context.BlogArticleProducts.AddAsync(articleProduct);
+                    await this.context.SaveChangesAsync();
+                }
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException e)
             {
+                Console.WriteLine(e.Message);
                 return false;
             }
 
             return true;
         }
 
-        public async Task<bool> DestroyBlogArticleProductAsync(int blogArticle, int productId)
+        public async Task<bool> DestroyBlogArticleProductAsync(int blogArticleId, int productId)
         {
             var blog = this.context.BlogArticleProducts.FirstOrDefault(
-                x => x.BlogArticleId == blogArticle && x.ProductId == productId);
+                x => x.BlogArticleId == blogArticleId && x.ProductId == productId);
 
             if (blog == null)
             {
@@ -169,6 +174,12 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
             await this.context.SaveChangesAsync();
 
             return true;
+        }
+
+        private bool ProductLinkExists(int articleId, int productId)
+        {
+            return this.context.BlogArticleProducts.FirstOrDefault(
+                x => x.BlogArticleId == articleId && x.ProductId == productId) is not null;
         }
     }
 }

@@ -148,7 +148,7 @@ namespace NorthwindApiApp.Controllers
 
             var result = await this.categoryService.DestroyCategoryAsync(id);
 
-            return result ? this.NoContent() : this.NotFound($"Category Id = {id} NotFound.");
+            return result ? this.NoContent() : this.StatusCode(500, $"Couldn't delete category id={id}");
         }
     }
 }

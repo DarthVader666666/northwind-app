@@ -6,12 +6,12 @@ namespace NorthwindApiApp.Models
     {
         public int ArticleId { get; set; }
 
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
-        public DateTime PostedDate { get; set; }
+        public DateTime? PostedDate { get; set; }
 
-        public int AuthorId { get; set; }
+        public int? AuthorId { get; set; }
 
-        public string AuthorName { get; set; }
+        public string? AuthorName { get; set; }
     }
 }

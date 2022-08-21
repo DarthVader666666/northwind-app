@@ -8,25 +8,19 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
+
     <header>
-        <div class="bg-dark text-white p-2">
-            <span class="navbar-brand ml-2">Vadim (DarthVader) Rumyancev WebApp</span>
-        </div>
-        <div class="row m-1 p-1">
-            <div>
-                <a class="navbar-brand" asp-area="" asp-controller="Employee" asp-action="Index">Employees</a>
-            </div>
-            <div>
-                <a class="navbar-brand" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
-            </div>
-            <div>
-                <a class="navbar-brand" asp-area="" asp-controller="BlogArticle" asp-action="Index">Articles</a>
-            </div>
-            <div>
-                <a class="navbar-brand" asp-area="" asp-controller="Category" asp-action="Index">Categories</a>
-            </div>
+        <div class="bg-dark p-3">
+            <a class="navbar-brand ml-3 text-white font-weight-bold" asp-controller="Home" asp-action="Index">Vadim Rumyancev WebApp</a>
+            <a class="navbar-brand ml-1 text-white" asp-controller="Employee" asp-action="Index">Employees</a>
+            <a class="navbar-brand ml-1 text-white" asp-controller="Product" asp-action="Index">Products</a>
+            <a class="navbar-brand ml-1 text-white" asp-controller="Category" asp-action="Index">Categories</a>
+            <a class="navbar-brand ml-1 text-white" asp-controller="BlogArticle" asp-action="Index">Articles</a>
         </div>
     </header>
+
+    <div class="container" style="height:30px;">
+    </div>
 
     <div class="container">
         <main role="main" class="pb-3">

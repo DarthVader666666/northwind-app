@@ -1,0 +1,43 @@
+﻿@model IEnumerable<NorthwindMvc.Models.ProductModels.ProductModel>
+
+<html>
+  <head>
+      <meta name="viewport" content="width=device-width" />
+      <link rel="stylesheet" href="wwwroot/lib/bootstrap/dist/css/bootstrap.css" />
+  </head>
+  <body>
+      <h2>Search results:</h2>
+              <table class="table table-bordered table-striped" style="width:100%">
+                  <thread>
+                      <tr>
+                          <th>Product name</th>
+                          <th>Quantity per unit</th>
+                          <th>Unit price</th>
+                          <th>Units in stock</th>
+                          <th>
+                              <div class="col text-center">
+                                  <a asp-controller="Product" asp-action="Create" class="btn btn-primary">Create new Product</a>
+                              </div>
+                          </th>
+                      </tr>
+                  </thread>
+                  <tbody>
+                      @foreach (var p in this.Model)
+                      {
+                          <tr>
+                              <td>@p.ProductName</td>
+                              <td>@p.QuantityPerUnit</td>
+                              <td>@p.UnitPrice</td>
+                              <td>@p.UnitsInStock</td>
+                              <td>
+                                  <div class="w-100 btn-group" role="group">
+                                      <a asp-controller="Product" asp-action="Update" asp-route-id="@p.ProductId" class="btn btn-primary mx-1">Update</a>
+                                      <a asp-controller="Product" asp-action="Delete" asp-route-id="@p.ProductId" class="btn btn-danger mx-1">Delete</a>
+                                  </div>
+                              </td>
+                          </tr>
+                      }
+                  </tbody>
+              </table>
+  </body>
+</html>

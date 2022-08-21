@@ -50,22 +50,24 @@ namespace Northwind.Services.EntityFrameworkCore
 
         public async IAsyncEnumerable<Product> LookupProductsByNameAsync(List<string> names)
         {
-            var products = this.context.Products.Where(p => names.Any(n => n == p.ProductName)).AsAsyncEnumerable();
+            var products = this.context.Products.AsAsyncEnumerable();
 
-            //if (!result.Any())
-            //{
-            //    return null;
-            //}
-
-            await foreach (var item in products)
+            await foreach (var p in products)
             {
-                yield return this.fromEntitymapper.Map<Product>(item);
+                if (names.Any(x =>
+                {
+                    if (x is null) return false;
+                    return p.ProductName.Contains(x, StringComparison.OrdinalIgnoreCase);
+                }))
+                { 
+                    yield return this.fromEntitymapper.Map<Product>(p);
+                }
             }
         }
 
         public async IAsyncEnumerable<Product> GetProductsAsync(int offset, int limit)
         { 
-            var products = this.context.Products.Skip(offset).Take(limit).AsAsyncEnumerable();
+            var products = this.context.Products.OrderBy(x => x.ProductId).Skip(offset).Take(limit).AsAsyncEnumerable();
 
             await foreach (var item in products)
             {

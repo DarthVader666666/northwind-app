@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -18,6 +19,9 @@ namespace NorthwindMvc.Infrastructure
             this._urlHelperFactory = helperFactory ?? throw new ArgumentNullException(nameof(helperFactory));
         }
 
+        [HtmlAttributeName(DictionaryAttributePrefix = "page-url-")]
+        public Dictionary<string, object> PageUrlValues { get; set; } = new Dictionary<string, object>();
+
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
@@ -34,11 +38,26 @@ namespace NorthwindMvc.Infrastructure
 
             TagBuilder result = new TagBuilder("div");
 
+            if (this.PageModel is null)
+            {
+                return;
+            }
+
             for (int i = 1; i <= this.PageModel.TotalPages; i++)
             {
                 TagBuilder tag = new TagBuilder("a");
 
-                tag.Attributes["href"] = urlHelper.Action(this.PageAction, new { page = i });
+                this.PageUrlValues["page"] = i;
+
+                if (this.PageModel.Category is null)
+                {
+                    tag.Attributes["href"] = urlHelper.Action(this.PageAction, new { page = i });
+                }
+                else
+                {
+                    tag.Attributes["href"] = urlHelper.Action(this.PageAction,
+                        new { category = this.PageModel.Category, page = i });
+                }                
 
                 if (this.PageClassesEnabled)
                 {

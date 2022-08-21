@@ -1,0 +1,22 @@
+﻿@model NorthwindMvc.Models.ProductModels.ProductModel
+
+<form method="post" asp-action="DeletePost">
+    <div class="border p-3 text-center">
+        <div class="form-group row">
+            <h3 class="text-black pl-3">Are You sure you want to delete</h3>
+            <h3 class="text-black pl-3">"@this.Model.ProductName"?</h3>
+        </div>
+        <div class="row">
+        <div class="col-12">
+            <div class="form-group row">
+                <div class="col-6">
+                    <input asp-action="DeletePost" asp-route-id="@Model.ProductId" type="submit" class="btn btn-danger w-75" value="Yes"/>
+                </div>
+                <div class="col-6">
+                    <a asp-action="Index" class="btn btn-success w-75">No</a>
+                </div>
+            </div>
+        </div>
+        </div>    
+    </div>
+</form>

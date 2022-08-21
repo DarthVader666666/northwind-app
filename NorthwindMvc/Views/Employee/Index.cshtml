@@ -6,15 +6,27 @@
       <link rel="stylesheet" href="wwwroot/lib/bootstrap/dist/css/bootstrap.css" />
   </head>
   <body>
-       <div class="col-16 text-right">
-            <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">Create new Employee</a>
+        <div>
+          <form asp-action="FindByName" asp-controller="Employee" method="get">
+              <label>Search employee:</label>
+              <input asp-for="PagingInfo.Name"/> 
+              <input type="submit" class="btn btn-primary" value="Search"/>
+          </form>
+
+          <form asp-action="Index" asp-controller="Employee" asp-route-name="@Model.PagingInfo.Name" hidden></form>
        </div>
-       <table class="table">
+
+       <table class="table table-bordered table-striped">
             <thread>
                 <tr>
                     <th>Full name</th>
                     <th>Title</th>
                     <th>Photo</th>
+                    <th>
+                        <div class="col text-center">
+                            <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">Add new Employee</a>
+                        </div>
+                    </th>
                 </tr>
             </thread>
             <tbody>
@@ -25,6 +37,12 @@
                     <td>@e.Title</td>
                     <td>
                         <img alt="" src="data:image/bmp;base64,@Convert.ToBase64String(e.Photo)" style="height:60px;width:60px;"/>
+                    </td>
+                    <td>
+                        <div class="w-100 btn-group" role="group">
+                            <a asp-controller="Employee" asp-action="Update" asp-route-id="@e.EmployeeId" class="btn btn-primary mx-1">Update</a>
+                            <a asp-controller="Employee" asp-action="Delete" asp-route-id="@e.EmployeeId" class="btn btn-danger mx-1">Delete</a>
+                        </div>                        
                     </td>
                 </tr>
             }
