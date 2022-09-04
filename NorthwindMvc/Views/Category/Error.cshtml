@@ -1,0 +1,31 @@
+﻿@model NorthwindMvc.Models.CategoryModels.CategoryErrorModel
+
+<html>
+    <body>
+        <div>
+
+            <h1>
+                Couldn't delete category "@this.Model.CategoryName"
+            </h1>
+
+            <h2>
+                Category has related products:
+            </h2>
+           
+            <div>
+                @foreach(var item in this.Model.ProductNames)
+                {
+                    <div>
+                        - @item
+                    </div>
+                }
+            </div>
+
+            <div>
+                <a asp-controller="Category" asp-action="Index" class="btn btn-primary mx-1">Back</a>
+            </div>
+        </div>
+
+    </body>
+
+</html>

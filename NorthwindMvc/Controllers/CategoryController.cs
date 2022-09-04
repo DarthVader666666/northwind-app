@@ -123,9 +123,10 @@ namespace NorthwindMvc.Controllers
 
             var response = await this.httpClient.DeleteAsync(BasePath + "/" + id);
 
-            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            if (response.StatusCode == HttpStatusCode.InternalServerError)
             {
-                return this.StatusCode(500, await response.Content.ReadAsStringAsync());
+                return this.RedirectToAction("Error", new { id = id });
+                //return this.StatusCode(500, await response.Content.ReadAsStringAsync());
             }
 
             return this.RedirectToAction("Index");
@@ -197,6 +198,25 @@ namespace NorthwindMvc.Controllers
                     x.Picture = x.Picture.HasHeader(OleHeader) ? x.Picture[OleHeader.Length..] : x.Picture;
                     return this.mapper.Map<ProductCategory, CategoryModel>(x);
                 });
+
+            return this.View(viewModel);
+        }
+
+        public async Task<IActionResult> ErrorAsync(int? id)
+        {
+            var json = await (await this.httpClient.GetAsync(BasePath + $"/{id}")).Content.ReadAsStringAsync();
+            var category = JsonConvert.DeserializeObject<ProductCategory>(json);
+
+            var count = int.Parse(await (await this.httpClient.GetAsync("api/products/total")).Content.ReadAsStringAsync());
+            json = await (await this.httpClient.GetAsync($"api/products?offset={0}&limit={count}")).Content.ReadAsStringAsync();
+
+            var products = JsonConvert.DeserializeObject<List<Product>>(json).Where(x => x.CategoryId == id);
+
+            var viewModel = new CategoryErrorModel
+            {
+                CategoryName = category.CategoryName,
+                ProductNames = products.Select(x => x.ProductName)
+            };
 
             return this.View(viewModel);
         }
