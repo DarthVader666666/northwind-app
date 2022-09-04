@@ -1,5 +1,6 @@
 # NorthwindApiApp - server
 # NorthwindMvc - client
+# Базы данных : NorthwindApiApp/Databases/Northwind.mdf & NorthwindBlogging.mdf (MSSQLLocalDB)
 
 # Northwind Applications
 
