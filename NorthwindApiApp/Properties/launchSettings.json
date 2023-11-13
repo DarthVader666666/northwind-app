@@ -1,13 +1,4 @@
 {
-  "$schema": "http://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:26472",
-      "sslPort": 0
-    }
-  },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
@@ -22,11 +13,25 @@
       "launchUrl": "api",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "SQLCONNSTR_NORTHWIND_BLOGGING": "data source=(localdb)\\MSSQLLocalDB; Integrated Security=True; Initial Catalog=NorthwindBlogging;",
-        //"SQLCONNSTR_NORTHWIND_BLOGGING": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=NorthwindBlogging;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+        "SQLCONNSTR_NORTHWIND_BLOGGING": "data source=(localdb)\\MSSQLLocalDB; Integrated Security=True; Initial Catalog=NorthwindBlogging;"
       },
       "applicationUrl": "http://localhost:5000",
       "dotnetRunMessages": "true"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api",
+      "publishAllPorts": true
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:26472",
+      "sslPort": 0
     }
   }
 }
