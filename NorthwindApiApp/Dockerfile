@@ -27,4 +27,5 @@ RUN dotnet publish "NorthwindApiApp.csproj" -c Release -o /app/publish /p:UseApp
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+EXPOSE 5000
 ENTRYPOINT ["dotnet", "NorthwindApiApp.dll"]

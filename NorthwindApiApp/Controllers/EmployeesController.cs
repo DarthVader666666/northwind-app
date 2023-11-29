@@ -20,6 +20,7 @@ namespace NorthwindApiApp.Controllers
         [HttpGet("total")]
         public async Task<ActionResult<int>> ReadAmountOfEmployees()
         {
+            return 5;
             return await this.service.GetEmployeesCountAsync();
         }
 
