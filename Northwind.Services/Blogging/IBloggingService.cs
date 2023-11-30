@@ -1,4 +1,8 @@
-﻿namespace Northwind.Services.Blogging
+﻿using System.IO;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+namespace Northwind.Services.Blogging
 {
     public interface IBloggingService
     {

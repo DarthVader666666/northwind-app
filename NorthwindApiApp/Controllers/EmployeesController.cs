@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Northwind.Services.Employees;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace NorthwindApiApp.Controllers
 {
@@ -18,10 +20,11 @@ namespace NorthwindApiApp.Controllers
         }
 
         [HttpGet("total")]
-        public async Task<ActionResult<int>> ReadAmountOfEmployees()
+        public ActionResult<int> ReadAmountOfEmployees()
         {
-            return 5;
-            return await this.service.GetEmployeesCountAsync();
+            const int result = 5;
+            return result;
+            //return await this.service.GetEmployeesCountAsync();
         }
 
         [HttpGet("{id:int}")]

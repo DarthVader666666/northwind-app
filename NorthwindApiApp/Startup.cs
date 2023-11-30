@@ -31,7 +31,8 @@ namespace NorthwindApiApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<BloggingContext>(options => 
-            options.UseSqlServer(this.Configuration.GetConnectionString("NorthwindBlogging")));
+            //options.UseSqlServer(this.Configuration.GetConnectionString("NorthwindBlogging"))
+            options.UseInMemoryDatabase("NorthwindBlogging"));
 
             services.AddScoped<IBloggingService, BloggingService>(serviceProvider =>
             new BloggingService(serviceProvider.GetService<BloggingContext>()));

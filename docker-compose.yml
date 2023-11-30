@@ -1,0 +1,35 @@
+version: '3.7'
+
+networks:
+ dev:
+  driver: bridge
+
+services:
+ northwind-app:
+  image: docker.io/library/northwind
+  depends_on:
+   - "app_db"
+  container_name: northwind-services
+  ports:
+   - "8088:80"
+  build:
+   context: .
+   dockerfile: Dockerfile
+  environment:
+   - ConnectionStrings__Northwind=(localdb)\\MSSQLLocalDB;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;
+   - ASPNETCORE_URLS=http://+:80
+  networks:
+   - dev  
+
+ app_db:
+  image: "mcr.microsoft.com/mssql/server"
+  container_name: app_db
+  ports:
+   - "5433:5432"
+  restart: always
+
+  networks:
+   - dev  
+
+volumes:
+ app_data:    

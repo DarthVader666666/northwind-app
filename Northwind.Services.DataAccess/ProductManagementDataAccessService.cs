@@ -1,4 +1,10 @@
-﻿using AutoMapper;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+
+using AutoMapper;
 using Northwind.Services.Products;
 using Northwind.DataAccess;
 using Northwind.DataAccess.Products;
