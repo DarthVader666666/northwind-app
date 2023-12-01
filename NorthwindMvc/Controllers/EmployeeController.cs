@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Northwind.Services.Employees;
 using NorthwindMvc.Extensions;
 using NorthwindMvc.Models;
 using NorthwindMvc.Models.EmployeeModels;

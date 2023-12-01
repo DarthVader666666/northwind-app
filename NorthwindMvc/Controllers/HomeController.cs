@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Northwind.Services.Employees;
 using NorthwindMvc.Models;
 using System;
 using System.Collections.Generic;

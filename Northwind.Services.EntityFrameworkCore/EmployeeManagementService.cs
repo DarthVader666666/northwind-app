@@ -48,6 +48,7 @@ namespace Northwind.Services.EntityFrameworkCore
                 return false;
             }
 
+            this.context.Employees.Attach(employee);
             this.context.Employees.Remove(employee);
             await this.context.SaveChangesAsync();
             return true;
