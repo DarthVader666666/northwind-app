@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Northwind.Services.Blogging;
 using Northwind.Services.EntityFrameworkCore.Blogging.Context;
+using Northwind.Services.Interfaces;
 
 namespace Northwind.Services.EntityFrameworkCore.Blogging
 {

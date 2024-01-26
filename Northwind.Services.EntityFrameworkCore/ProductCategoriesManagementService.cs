@@ -9,6 +9,7 @@ using Northwind.Services.Products;
 using Northwind.Services.EntityFrameworkCore.Context;
 using Northwind.Services.EntityFrameworkCore.Entities;
 using AutoMapper;
+using Northwind.Services.Interfaces;
 
 namespace Northwind.Services.EntityFrameworkCore
 {

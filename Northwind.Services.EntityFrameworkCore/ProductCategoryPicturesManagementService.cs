@@ -6,6 +6,7 @@ using System.Linq;
 
 using Northwind.Services.EntityFrameworkCore.Context;
 using Microsoft.EntityFrameworkCore;
+using Northwind.Services.Interfaces;
 
 namespace Northwind.Services.EntityFrameworkCore
 {
@@ -18,7 +19,7 @@ namespace Northwind.Services.EntityFrameworkCore
             this.context = context;
         }
 
-        public async Task<bool> DestroyPictureAsync(int categoryId)
+        public async Task<bool> DestroyCategoryPictureAsync(int categoryId)
         {
             var category = await this.context.Categories.FindAsync(categoryId);
 
@@ -32,14 +33,14 @@ namespace Northwind.Services.EntityFrameworkCore
             return true;
         }
 
-        public async Task<(bool, byte[])> TryGetPictureAsync(int categoryId)
+        public async Task<(bool, byte[])> TryGetCategoryPictureAsync(int categoryId)
         {
             var category = await this.context.Categories.FindAsync(categoryId);
 
             return (category.Picture is not null, category.Picture);
         }
 
-        public async Task<bool> UpdatePictureAsync(int categoryId, Stream stream)
+        public async Task<bool> UpdateCategoryPictureAsync(int categoryId, Stream stream)
         {
             var category = await this.context.Categories.FindAsync(categoryId);
 

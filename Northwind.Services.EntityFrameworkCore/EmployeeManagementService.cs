@@ -8,6 +8,7 @@ using Northwind.Services.Employees;
 using Northwind.Services.EntityFrameworkCore.Context;
 using Northwind.Services.EntityFrameworkCore.Entities;
 using AutoMapper;
+using Northwind.Services.Interfaces;
 
 namespace Northwind.Services.EntityFrameworkCore
 {
@@ -48,7 +49,16 @@ namespace Northwind.Services.EntityFrameworkCore
                 return false;
             }
 
-            this.context.Employees.Attach(employee);
+            var relatedOrders = this.context.Orders.Where(order => order.EmployeeId == employeeId);
+            var relatedTerritories = this.context.EmployeeTerritories.Where(et => et.EmployeeId == employeeId);
+            var relatedOrderDetails = from od in this.context.OrderDetails
+                                      from ro in relatedOrders
+                                      where od.OrderId == ro.OrderId
+                                      select od;
+
+            this.context.Orders.RemoveRange(relatedOrders);
+            this.context.EmployeeTerritories.RemoveRange(relatedTerritories);
+            this.context.OrderDetails.RemoveRange(relatedOrderDetails);
             this.context.Employees.Remove(employee);
             await this.context.SaveChangesAsync();
             return true;

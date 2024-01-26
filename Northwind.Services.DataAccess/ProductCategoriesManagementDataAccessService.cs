@@ -8,6 +8,7 @@ using Northwind.DataAccess;
 using Northwind.DataAccess.Products;
 using Northwind.Services.Products;
 using AutoMapper;
+using Northwind.Services.Interfaces;
 
 namespace Northwind.Services.DataAccess
 {

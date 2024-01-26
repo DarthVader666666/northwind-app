@@ -6,6 +6,7 @@ using System.Linq;
 
 using Northwind.DataAccess;
 using Northwind.DataAccess.Products;
+using Northwind.Services.Interfaces;
 
 namespace Northwind.Services.DataAccess
 {
@@ -18,7 +19,7 @@ namespace Northwind.Services.DataAccess
             this.categoryService = factory.GetProductCategoryDataAccessObject();
         }
 
-        public Task<bool> DestroyPictureAsync(int categoryId)
+        public Task<bool> DestroyCategoryPictureAsync(int categoryId)
         {
             return Task.Run(() =>
             {
@@ -28,7 +29,7 @@ namespace Northwind.Services.DataAccess
             });
         }
 
-        public Task<(bool, byte[])> TryGetPictureAsync(int categoryId)
+        public Task<(bool, byte[])> TryGetCategoryPictureAsync(int categoryId)
         {
             return Task.Run(() =>
             {
@@ -44,7 +45,7 @@ namespace Northwind.Services.DataAccess
             });
         }
 
-        public Task<bool> UpdatePictureAsync(int categoryId, Stream stream)
+        public Task<bool> UpdateCategoryPictureAsync(int categoryId, Stream stream)
         {
             return Task.Run(() =>
             {

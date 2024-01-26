@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Northwind.Services.Products;
 
-namespace Northwind.Services
+namespace Northwind.Services.Interfaces
 {
     public interface IProductCategoriesManagementService
     {

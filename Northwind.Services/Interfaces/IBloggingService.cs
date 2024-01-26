@@ -1,8 +1,9 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Northwind.Services.Blogging;
 
-namespace Northwind.Services.Blogging
+namespace Northwind.Services.Interfaces
 {
     public interface IBloggingService
     {

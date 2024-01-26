@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Northwind.Services.Interfaces;
 
 namespace NorthwindApiApp
 {
@@ -30,6 +31,8 @@ namespace NorthwindApiApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy("AllowMvcClient", policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
             services.AddDbContext<BloggingContext>(options => 
             //options.UseSqlServer(this.Configuration.GetConnectionString("NorthwindBlogging"))
             options.UseInMemoryDatabase("NorthwindBlogging"));
@@ -66,6 +69,10 @@ namespace NorthwindApiApp
                     {
                         services.AddDbContext<NorthwindContext>(options =>
                         options.UseSqlServer(this.Configuration.GetConnectionString("Northwind")));
+
+                        services.AddScoped<IEmployeePicturesManagementService, EmployeePictureManagementService>(
+                            serviceProvider => new EmployeePictureManagementService(
+                                serviceProvider.GetService<NorthwindContext>()));
 
                         services.AddScoped<IProductManagementService, ProductManagementService>(
                             serviceProvider => new ProductManagementService(
@@ -129,6 +136,7 @@ namespace NorthwindApiApp
             }
 
             app.UseRouting();
+            app.UseCors("AllowMvcClient");
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

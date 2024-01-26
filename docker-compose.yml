@@ -1,32 +1,40 @@
-version: '3.7'
+version: '3.4'
 
 networks:
  dev:
   driver: bridge
 
 services:
- app_db:
-  image: "mcr.microsoft.com/mssql/server"
-  container_name: sqlserver
-  ports:
-   - "8002:1433"
-  environment:
-   - ACCEPT_EULA=Y
-   - SA_PASSWORD=Haemorr_8421
-  restart: always
-  networks: 
-   - dev
+  northwindmvc:
+    image: ${DOCKER_REGISTRY-}northwindmvc
+    ports:
+     - "8001:81"
+    build:
+      context: .
+      dockerfile: NorthwindMvc/Dockerfile
+    depends_on: 
+     - northwindapi
+    networks: 
+     - dev
 
- northwind-app:
-  image: northwind
-  depends_on:
-   - "app_db"
-  container_name: sad_colden
-  ports:
-   - "8088:80"
-  build:
-   context: .
-   dockerfile: Dockerfile
-  networks: 
-   - dev
-  
+  northwindapi:
+    image: ${DOCKER_REGISTRY-}northwindapi
+    ports:
+     - "8000:80"
+    build:
+      context: .
+      dockerfile: NorthwindApiApp/Dockerfile
+    networks: 
+     - dev
+
+  app_db:
+    image: "mcr.microsoft.com/mssql/server"
+    container_name: sqlserver
+    ports:
+     - "8002:1433"
+    environment:
+     - ACCEPT_EULA=Y
+     - SA_PASSWORD=Haemorr_8421
+    restart: always
+    networks: 
+     - dev

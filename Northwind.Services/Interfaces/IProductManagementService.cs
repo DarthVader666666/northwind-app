@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Northwind.Services.Products;
 
-namespace Northwind.Services
+namespace Northwind.Services.Interfaces
 {
     /// <summary>
     /// Represents a management service for products.

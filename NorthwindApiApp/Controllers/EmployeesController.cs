@@ -1,22 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Northwind.Services.Employees;
-using System;
-using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using Northwind.Services.Interfaces;
+using Microsoft.AspNetCore.Cors;
 
 namespace NorthwindApiApp.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors]
     [ApiController]
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeManagementService service;
+        private readonly IEmployeePicturesManagementService pictureService;
 
-        public EmployeesController(IEmployeeManagementService service)
+        public EmployeesController(IEmployeeManagementService service, IEmployeePicturesManagementService pictureService)
         {
             this.service = service;
+            this.pictureService = pictureService;
         }
 
         [HttpGet("total")]
@@ -89,6 +92,38 @@ namespace NorthwindApiApp.Controllers
             var result = await this.service.DestroyEmployeeAsync(id);
 
             return result ? this.NoContent() : this.NotFound($"employee Id = {id} NotFound.");
+        }
+
+        [HttpPut("{id:int}/picture")]
+        public async Task<IActionResult> UpdateEmployeeImage(int id)
+        {
+            var stream = this.HttpContext.Request.Form.Files[0].OpenReadStream();
+            var result = await this.pictureService.UpdateEmployeePictureAsync(id, stream);
+            stream.Close();
+
+            if (result)
+            {
+                return this.NoContent();
+            }
+            else
+            {
+                return this.NotFound();
+            }
+        }
+
+        [HttpDelete("{id:int}/picture")]
+        public async Task<IActionResult> DeleteEmployeeImage(int id)
+        {
+            var result = await this.pictureService.DestroyEmployeePictureAsync(id);
+
+            if (result)
+            {
+                return this.NoContent();
+            }
+            else
+            {
+                return this.NotFound();
+            }
         }
     }
 }

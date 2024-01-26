@@ -78,8 +78,11 @@ namespace NorthwindMvc.Controllers
         {
             var employee = this.mapper.Map<Employee>(employeeModel);
 
-            using var reader = new BinaryReader(employeeModel.PictureForm.OpenReadStream());
-            employee.Photo = reader.ReadBytes((int)employeeModel.PictureForm.Length);
+            if (employeeModel.PictureForm is not null)
+            {
+                using var reader = new BinaryReader(employeeModel.PictureForm.OpenReadStream());
+                employee.Photo = reader.ReadBytes((int)employeeModel.PictureForm.Length);
+            }
 
             var json = JsonConvert.SerializeObject(employee);
             var data = new StringContent(json, Encoding.UTF8, "application/json");

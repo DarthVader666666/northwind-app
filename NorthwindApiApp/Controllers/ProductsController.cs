@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Northwind.Services;
+using Northwind.Services.Interfaces;
 using Northwind.Services.Products;
 
 namespace NorthwindApiApp.Controllers

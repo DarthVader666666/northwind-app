@@ -9,6 +9,7 @@ using Northwind.Services.EntityFrameworkCore.Entities;
 using Northwind.Services.Products;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Northwind.Services.Interfaces;
 
 namespace Northwind.Services.EntityFrameworkCore
 {
@@ -48,7 +49,8 @@ namespace Northwind.Services.EntityFrameworkCore
             {
                 return false;
             }
-
+            var relatedOrderDetails = this.context.OrderDetails.Where(od => od.ProductId == productId);
+            this.context.OrderDetails.RemoveRange(relatedOrderDetails);
             this.context.Products.Remove(product);
             await this.context.SaveChangesAsync();
             return true;

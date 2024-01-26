@@ -4,8 +4,8 @@ using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Northwind.Services;
 using Northwind.Services.Products;
+using Northwind.Services.Interfaces;
 
 namespace NorthwindApiApp.Controllers
 {
@@ -67,7 +67,7 @@ namespace NorthwindApiApp.Controllers
         [HttpGet("{categoryId:int}/picture")]
         public async Task<IActionResult> ReadCategoryImage(int categoryId)
         {
-            var (result, bytes) = await this.pictureService.TryGetPictureAsync(categoryId);
+            var (result, bytes) = await this.pictureService.TryGetCategoryPictureAsync(categoryId);
 
             if (!result)
             {
@@ -110,7 +110,7 @@ namespace NorthwindApiApp.Controllers
         public async Task<IActionResult> UpdateCategoryImage(int categoryId)
         {
             var stream = this.HttpContext.Request.Form.Files[0].OpenReadStream();
-            var result = await this.pictureService.UpdatePictureAsync(categoryId, stream);
+            var result = await this.pictureService.UpdateCategoryPictureAsync(categoryId, stream);
             stream.Close();
 
             if (result)
@@ -126,7 +126,7 @@ namespace NorthwindApiApp.Controllers
         [HttpDelete("{categoryId:int}/picture")]
         public async Task<IActionResult> DeleteCategoryImage(int categoryId)
         {
-            var result = await this.pictureService.DestroyPictureAsync(categoryId);
+            var result = await this.pictureService.DestroyCategoryPictureAsync(categoryId);
 
             if (result)
             {

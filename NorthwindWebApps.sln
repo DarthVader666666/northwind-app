@@ -3,13 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{90B81114-F696-47F2-B5F4-D107E3399683}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		docker-compose.yml = docker-compose.yml
-		Dockerfile = Dockerfile
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NorthwindApiApp", "NorthwindApiApp\NorthwindApiApp.csproj", "{6D84D21D-E257-4D9D-A629-6AAA7D92AE69}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind.Services.EntityFrameworkCore", "Northwind.Services.EntityFrameworkCore\Northwind.Services.EntityFrameworkCore.csproj", "{FC815719-C42A-4221-A7EE-75A9BFD89232}"
@@ -27,6 +20,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NorthwindMvc", "NorthwindMvc\NorthwindMvc.csproj", "{CC6D3FEB-222F-45D4-96BB-1AFD25C09576}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind.IntegrationTests", "Northwind.IntegrationTests\Northwind.IntegrationTests.csproj", "{DEBDBB67-D775-41A4-A02C-6F85C87F8BE5}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{692F3126-F764-45FF-A4A2-4817104B6AC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -146,6 +141,18 @@ Global
 		{DEBDBB67-D775-41A4-A02C-6F85C87F8BE5}.Release|x64.Build.0 = Release|Any CPU
 		{DEBDBB67-D775-41A4-A02C-6F85C87F8BE5}.Release|x86.ActiveCfg = Release|Any CPU
 		{DEBDBB67-D775-41A4-A02C-6F85C87F8BE5}.Release|x86.Build.0 = Release|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Debug|x64.Build.0 = Debug|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Debug|x86.Build.0 = Debug|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Release|x64.ActiveCfg = Release|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Release|x64.Build.0 = Release|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Release|x86.ActiveCfg = Release|Any CPU
+		{692F3126-F764-45FF-A4A2-4817104B6AC8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,10 +5,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindApiApp.Models;
-using Northwind.Services;
 using Northwind.Services.Blogging;
-using Northwind.Services.Employees;
 using Northwind.Services.Products;
+using Northwind.Services.Interfaces;
 
 namespace NorthwindApiApp.Controllers
 {
