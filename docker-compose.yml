@@ -5,18 +5,6 @@ networks:
   driver: bridge
 
 services:
-  northwindmvc:
-    image: ${DOCKER_REGISTRY-}northwindmvc
-    ports:
-     - "8001:81"
-    build:
-      context: .
-      dockerfile: NorthwindMvc/Dockerfile
-    depends_on: 
-     - northwindapi
-    networks: 
-     - dev
-
   northwindapi:
     image: ${DOCKER_REGISTRY-}northwindapi
     ports:
@@ -24,6 +12,18 @@ services:
     build:
       context: .
       dockerfile: NorthwindApiApp/Dockerfile
+    networks: 
+     - dev
+
+  northwindmvc:
+    image: ${DOCKER_REGISTRY-}northwindmvc
+    ports:
+     - "8001:80"
+    build:
+      context: .
+      dockerfile: NorthwindMvc/Dockerfile
+    depends_on: 
+     - northwindapi
     networks: 
      - dev
 
@@ -35,6 +35,5 @@ services:
     environment:
      - ACCEPT_EULA=Y
      - SA_PASSWORD=Haemorr_8421
-    restart: always
     networks: 
      - dev

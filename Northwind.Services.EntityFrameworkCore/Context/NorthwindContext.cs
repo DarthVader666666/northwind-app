@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Northwind.Services.EntityFrameworkCore.Entities;
 
 #nullable disable
@@ -10,7 +11,7 @@ namespace Northwind.Services.EntityFrameworkCore.Context
         public NorthwindContext(DbContextOptions<NorthwindContext> options)
             : base(options)
         {
-            this.Database.EnsureCreated();
+            this.Database.Migrate();
         }
 
         public virtual DbSet<AlphabeticalListOfProductEntity> AlphabeticalListOfProducts { get; set; }
@@ -45,6 +46,8 @@ namespace Northwind.Services.EntityFrameworkCore.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseSqlServer();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

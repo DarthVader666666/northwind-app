@@ -33,9 +33,7 @@ namespace NorthwindApiApp
         {
             services.AddCors(options => options.AddPolicy("AllowMvcClient", policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
-            services.AddDbContext<BloggingContext>(options => 
-            //options.UseSqlServer(this.Configuration.GetConnectionString("NorthwindBlogging"))
-            options.UseInMemoryDatabase("NorthwindBlogging"));
+            services.AddDbContext<BloggingContext>(options => options.UseInMemoryDatabase("NorthwindBlogging"));
 
             services.AddScoped<IBloggingService, BloggingService>(serviceProvider =>
             new BloggingService(serviceProvider.GetService<BloggingContext>()));
@@ -67,8 +65,9 @@ namespace NorthwindApiApp
 
                 case "EF_SQL":
                     {
-                        services.AddDbContext<NorthwindContext>(options =>
-                        options.UseSqlServer(this.Configuration.GetConnectionString("Northwind")));
+                        var connectionString = this.Configuration.GetConnectionString("Northwind");
+
+                        services.AddDbContext<NorthwindContext>(options => options.UseSqlServer(connectionString));
 
                         services.AddScoped<IEmployeePicturesManagementService, EmployeePictureManagementService>(
                             serviceProvider => new EmployeePictureManagementService(
@@ -123,16 +122,17 @@ namespace NorthwindApiApp
 
             try
             {
-                var context = app.ApplicationServices.GetService<NorthwindContext>();
+                var scope = app.ApplicationServices.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<NorthwindContext>();
 
                 if (context.Database.IsInMemory())
                 {
                     context.Seed(this.Configuration["PicturePath"]);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine("DB Context is scoped.");
+                Console.WriteLine(ex.Message);
             }
 
             app.UseRouting();
