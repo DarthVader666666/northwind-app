@@ -14,3 +14,6 @@ services:
   northwindapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "8000:80"
