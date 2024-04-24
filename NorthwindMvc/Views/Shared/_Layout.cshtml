@@ -10,12 +10,24 @@
 <body>
 
     <header>
-        <div class="bg-dark p-3">
-            <a class="navbar-brand ml-3 text-white font-weight-bold" asp-controller="Home" asp-action="Index">Vadim Rumyancev WebApp</a>
-            <a class="navbar-brand ml-1 text-white" asp-controller="Employee" asp-action="Index">Employees</a>
-            <a class="navbar-brand ml-1 text-white" asp-controller="Product" asp-action="Index">Products</a>
-            <a class="navbar-brand ml-1 text-white" asp-controller="Category" asp-action="Index">Categories</a>
-            <a class="navbar-brand ml-1 text-white" asp-controller="BlogArticle" asp-action="Index">Articles</a>
+        <div class="bg-dark p-2">
+            <div class="p-2" >
+                <a class="navbar-brand text-white fw-bold" style="padding-left:15px;" asp-controller="Home" asp-action="Index">Vadim Rumyancev WebApp</a>
+            </div>
+            <div class="link row text-center p-2" style="width:500px;">
+                <div class="col">
+                    <a asp-controller="Employee" asp-action="Index">Employees</a>
+                </div>
+                <div class="col">
+                    <a asp-controller="Product" asp-action="Index">Products</a>
+                </div>
+                <div class="col">
+                    <a asp-controller="Category" asp-action="Index">Categories</a>
+                </div>
+                <div class="col">
+                    <a asp-controller="BlogArticle" asp-action="Index">Articles</a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -37,3 +49,16 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+    
+<style>
+    .link a{
+        margin-left:6px;
+        color:white;
+        padding:4px;
+        text-decoration-line:none;
+    }
+
+    .link a:hover {
+        font-weight:bold;
+    }
+</style>
